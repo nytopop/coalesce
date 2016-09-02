@@ -1,0 +1,17 @@
+coalesce - a photo manager that works for you
+
+
+model view controller framework
+go-authboss for auth
+utron for MVC.
+
+
+steps
+
+template?
+
+
+--Milestone
+barebones photo upload
+barebones sign in
+mongo security
