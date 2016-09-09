@@ -3,11 +3,13 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/russross/blackfriday"
 
 	"gopkg.in/mgo.v2/bson"
 )
@@ -26,6 +28,7 @@ type Post struct {
 	Wordcount int           `bson:"wordcount"`
 	Timestamp time.Time     `bson:"timestamp"`
 	Body      string        `bson:"body"`
+	BodyHTML  template.HTML `bson:"bodyhtml"`
 	Comments  []Comment     `bson:"comments"`
 	Tags      []string      `bson:"tags"`
 }
@@ -36,6 +39,7 @@ type Comment struct {
 	Body      string    `bson:"body"`
 }
 
+// GET /posts
 func PostsHome(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("posts")
@@ -52,6 +56,7 @@ func PostsHome(c *gin.Context) {
 	})
 }
 
+// GET /posts/view/:id
 func PostsView(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("posts")
@@ -71,29 +76,29 @@ func PostsView(c *gin.Context) {
 	})
 }
 
+// GET /posts/new
 func PostsNew(c *gin.Context) {
-	//	session := globalSession.Copy()
-	//	s := session.DB(cfg.Database.Name).C("posts")
-
-	// create a page with a form, defaults filled out
-	// body should be markdown acceptable
-
 	c.HTML(http.StatusOK, "posts/new.html", gin.H{
 		"Site": cfg.Site,
 	})
 }
 
-func PostsCreate(c *gin.Context) {
+// POST /posts/new
+func PostsTryNew(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("posts")
 
 	// validate form
 	var postform PostForm
 	if err := c.Bind(&postform); err == nil {
+		// convert markdown
+		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
+
 		post := Post{
 			Title:     postform.Title,
 			Author:    postform.Author,
 			Body:      postform.Body,
+			BodyHTML:  template.HTML(body),
 			Timestamp: time.Now(),
 		}
 

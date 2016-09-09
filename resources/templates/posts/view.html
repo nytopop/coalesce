@@ -6,7 +6,7 @@
 	<div class="inner">
 		<header>
 			<h1>{{ .Post.Title }}</h1>
-			<p>{{ .Post.Body }}</p>
+			<p>{{ .Post.BodyHTML }}</p>
 		</header>
 		<p>
 		Tags: {{ range $k, $v := .Post.Tags }}{{ $v }}, {{ end }}

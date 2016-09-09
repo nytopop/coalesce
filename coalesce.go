@@ -18,26 +18,35 @@ var globalSession, _ = mgo.Dial(cfg.Database.Host)
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	//gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 
-	// Creates a gin router with default middleware:
-	// logger and recovery (crash-free) middleware
-	r := gin.Default()
+	r := gin.New()
+
+	// middleware
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
 
 	// templates
 	r.LoadHTMLGlob(cfg.Server.Template)
 
 	// routes
 	r.Static("/static", cfg.Server.Static)
+	r.GET("/", PagesHome)
 	r.GET("/img", ImgHome)
 	r.GET("/img/thumb/:id", ImgThumb)
 	r.GET("/img/view/:id", ImgView)
+
 	r.POST("/img/new", ImgUpload)
 
 	r.GET("/posts", PostsHome)
 	r.GET("/posts/view/:id", PostsView)
 	r.GET("/posts/new", PostsNew)
-	r.POST("/posts/new", PostsCreate)
+	r.POST("/posts/new", PostsTryNew)
+
+	r.GET("/auth/sign-in", AuthSignIn)
+	r.GET("/auth/register", AuthRegister)
+	r.POST("/auth/sign-in", AuthTrySignIn)
+	r.POST("/auth/register", AuthTryRegister)
 
 	r.Run()
 	// r.Run(":3000") for a hard coded port

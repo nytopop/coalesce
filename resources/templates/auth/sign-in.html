@@ -1,0 +1,22 @@
+{{ define "auth/sign-in.html" }}
+{{ template "misc/header.html" . }}		
+{{ template "misc/menu.html" . }}
+<!-- Main -->
+<div id="main">
+	<div class="inner">
+		<header>
+			<h3>Sign in:</h3>
+		</header>
+		<form method="post" action="/auth/sign-in">
+			<label for="username">Username</label>
+			<input type="text" name="username" id="username" required>
+
+			<label for="password">Password</label>
+			<input type="password" name="password" id="password" required>
+
+			<button type="submit">Sign in</button>
+		</form>
+	</div>
+</div>
+{{ template "misc/footer.html" . }}
+{{ end }}
