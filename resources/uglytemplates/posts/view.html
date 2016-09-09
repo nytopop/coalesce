@@ -1,0 +1,70 @@
+{{ define "posts/view.html" }}
+<!DOCTYPE html>
+<html lang="en">
+
+	{{ template "misc/header.html" .}}
+
+<body>
+
+	{{ template "misc/navbar.html" . }}
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+
+            <!-- Blog Entries Column -->
+            <div class="col-md-8">
+
+				<h2>{{ .Post.Title }}</h2>
+				<p class="lead">
+				by <a href="/users/view/{{ .Post.Author }}">{{ .Post.Author }}</a>
+				<p><span class="glyphicon glyphicon-time"></span> Posted on {{ .Post.Timestamp }}</p>
+				<hr>
+
+				<p>
+				{{ .Post.Body }}
+				</p>
+				
+				<br>
+				<br>
+
+				<hr>
+				<h3>Comments</h3>
+				{{ range $k, $v := .Post.Comments }}
+					<hr>
+					<h4>{{ $v.Author }} @ {{ $v.Timestamp }}</h4>
+					<p>{{ $v.Body }}</p>
+				{{ end }}
+            </div>
+
+            <!-- Blog Sidebar Widgets Column -->
+            <div class="col-md-4">
+				{{ template "misc/search.html" . }}
+
+				{{ template "misc/tags.html" . }}
+                
+				{{ template "misc/widget.html" . }}
+			</div>
+
+            </div>
+
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+		{{ template "misc/footer.html" . }}
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery -->
+    <script src="static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
+{{ end }}

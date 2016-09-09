@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	{{ template "header" .}}
+
+<body>
+
+	{{ template "navbar" . }}
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+
+            <!-- Blog Entries Column -->
+            <div class="col-md-8">
+
+				{{ template "preview-posts" . }}
+
+                <!-- Pager -->
+                <ul class="pager">
+                    <li class="previous">
+                        <a href="#">&larr; Older</a>
+                    </li>
+                    <li class="next">
+                        <a href="#">Newer &rarr;</a>
+                    </li>
+                </ul>
+
+            </div>
+
+            <!-- Blog Sidebar Widgets Column -->
+            <div class="col-md-4">
+				{{ template "search" . }}
+
+				{{ template "tags" . }}
+                
+				{{ template "widget" . }}
+			</div>
+
+            </div>
+
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+		{{ template "footer" . }}
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery -->
+    <script src="static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+{{ define "posts/view.html" }}
+{{ template "misc/header.html" . }}		
+{{ template "misc/menu.html" . }}
+<!-- Main -->
+<div id="main">
+	<div class="inner">
+		<header>
+			<h1>{{ .Post.Title }}</h1>
+			<p>{{ .Post.Body }}</p>
+		</header>
+		<p>
+		Tags: {{ range $k, $v := .Post.Tags }}{{ $v }}, {{ end }}
+		</p>
+	</div>
+
+	<br>
+	<div class="inner">
+		<header>
+			<h2>Comments</h2>
+		</header>
+		{{ range $k, $v := .Post.Comments }}
+			{{ $v.Author }} wrote:
+			<p>{{ $v.Body }}</p>
+		{{ end }}
+	</div>
+</div>
+{{ template "misc/footer.html" . }}
+{{ end }}

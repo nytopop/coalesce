@@ -1,0 +1,68 @@
+{{ define "posts/new.html" }}
+<!DOCTYPE html>
+<html lang="en">
+
+	{{ template "misc/header.html" .}}
+
+<body>
+
+	{{ template "misc/navbar.html" . }}
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+
+            <!-- Blog Entries Column -->
+            <div class="col-md-8">
+				<form method="post" action="/posts/new">
+					<div class="form-group">
+    					<label for="title">Title</label>
+    					<input type="text" class="form-control" name="title" id="title">
+  					</div>
+  					<div class="form-group">
+   						<label for="author">Author</label>
+   						<input type="text" class="form-control" name="author" id="author">
+  					</div>
+					<div class="form-group">
+						<label for="body">Body (markdown format)</label>
+						<textarea id="body" name="body" class="form-control" required></textarea>
+					</div>
+					<div class="form-group">
+						<label for="tags">Tags</label>
+						<input type="text" class="form-control" id="tags" name="tags">
+					</div>
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>	
+            </div>
+
+            <!-- Blog Sidebar Widgets Column -->
+            <div class="col-md-4">
+				{{ template "misc/search.html" . }}
+
+				{{ template "misc/tags.html" . }}
+                
+				{{ template "misc/widget.html" . }}
+			</div>
+
+            </div>
+
+        </div>
+        <!-- /.row -->
+
+        <hr>
+
+		{{ template "misc/footer.html" . }}
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery -->
+    <script src="static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
+{{ end }}

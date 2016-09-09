@@ -1,0 +1,28 @@
+{{ define "img/home.html" }}
+<!DOCTYPE html>
+<html lang="en">
+
+{{ template "misc/header.html" . }}
+
+<body>
+	<div>
+		{{ template "misc/navbar.html" . }}
+	</div>
+	{{ range $k, $v := .List }}
+	
+	<li>	
+	<a href="/img/view/{{ $v.Id.Hex }}">
+		{{ $v.Id.Hex }}
+	</a>
+	</li>
+
+	{{ end }}
+	<!-- jQuery -->
+    <script src="static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+{{ end }}

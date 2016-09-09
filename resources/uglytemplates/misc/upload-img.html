@@ -1,0 +1,19 @@
+{{ define "misc/upload-img.html" }}
+<!-- Blog Search Well -->
+                <div class="well">
+                    <h4>Upload Images</h4>
+					<div class="input-group">
+						<form class="form-horizontal" method="post" action="/img/new" enctype="multipart/form-data">
+							<div class="form-group row">
+								<div class="col-md-9 col-sm-9 col-xs-9">
+								<input class="form-control" type="file" name="file" accept="image/*" multiple>
+								</div>
+								
+							<div class="col-md-1 col-sm-1 col-xs-1 validation-icon required">	
+								<button class="btn btn-primary" type="submit">submit</button>
+							</div>
+							</div>
+						</form>
+					</div>
+                </div>
+{{ end }}

@@ -1,0 +1,31 @@
+{{ define "posts/new.html" }}
+{{ template "misc/header.html" . }}		
+{{ template "misc/menu.html" . }}
+<!-- Main -->
+<div id="main">
+<div class="inner">
+<header>
+<h1>New Post</h1>
+
+<form method="post" action="/posts/new">
+
+<label for="title">Title</label>
+<input type="text" name="title" id="title" required>
+
+<label for="author">Author</label>
+<input type="text" name="author" id="author" required>
+
+<label for="body">Body (markdown format)</label>
+<textarea id="body" name="body" required></textarea>
+
+<label for="tags">Tags</label>
+<input type="text" id="tags" name="tags" required>
+
+<button type="submit">Submit</button>
+</form>
+
+</header>
+</div>
+</div>
+{{ template "misc/footer.html" . }}
+{{ end }}
