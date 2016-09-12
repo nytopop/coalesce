@@ -8,6 +8,7 @@ import (
 	gcfg "gopkg.in/gcfg.v1"
 	mgo "gopkg.in/mgo.v2"
 
+	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,13 +19,18 @@ var globalSession, _ = mgo.Dial(cfg.Database.Host)
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 
 	r := gin.New()
 
 	// middleware
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+
+	// session management
+	secret := "wowzaverysecretivelucraciobuddy"
+	store := sessions.NewCookieStore([]byte(secret))
+	r.Use(sessions.Sessions(cfg.Site.Title, store))
 
 	// templates
 	r.LoadHTMLGlob(cfg.Server.Template)
@@ -40,8 +46,9 @@ func main() {
 
 	r.GET("/posts", PostsHome)
 	r.GET("/posts/view/:id", PostsView)
-	r.GET("/posts/new", PostsNew)
-	r.POST("/posts/new", PostsTryNew)
+	authorized := r.Group("/posts/new", AnyUserAuth())
+	authorized.GET("/", PostsNew)
+	authorized.POST("/", PostsTryNew)
 
 	r.GET("/auth/sign-in", AuthSignIn)
 	r.GET("/auth/register", AuthRegister)

@@ -6,8 +6,8 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 	"net/http"
-	"strconv"
 
+	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 
 	"gopkg.in/mgo.v2/bson"
@@ -29,31 +29,31 @@ type User struct {
 	Token string        `bson:"token"`
 }
 
+// implement groups with a middleware per group, call it a realm
+
 // modified auth middleware
-func BasicAuthForRealm(realm string) gin.HandlerFunc {
-	//session := globalSession.Copy()
-	//s := session.DB(cfg.Database.Name).C("auth")
-
-	if realm == "" {
-		realm = "Authorization Required"
-	}
-
-	realm = "Basic realm=" + strconv.Quote(realm)
-
+// checks if session cookie matches real account
+func AnyUserAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Search user in the slice of allowed credentials
-		//c.Request.Header.Get("Authorization")
-		/*
-			if !found {
-				// Credentials doesn't match, we return 401 and abort handlers chain.
-				c.Header("WWW-Authenticate", realm)
-				c.AbortWithStatus(401)
-			} else {
-				// The user credentials was found, set user's id to key AuthUserKey in this context, the userId can be read later using
-				// c.MustGet(gin.AuthUserKey)
-				c.Set("user", user)
-			}
-		*/
+		// db
+		session := globalSession.Copy()
+		s := session.DB(cfg.Database.Name).C("users")
+
+		// cookies
+		cookies := sessions.Default(c)
+
+		// check if user exists, and is val by token
+		query := bson.M{
+			"name":  cookies.Get("name"),
+			"token": cookies.Get("token"),
+		}
+
+		if n, _ := s.Find(query).Count(); n > 0 {
+			c.Set("name", cookies.Get("name"))
+		} else {
+			c.Redirect(302, "/auth/sign-in")
+		}
+		// c.MustGet("name") to check
 	}
 }
 
@@ -66,8 +66,12 @@ func AuthSignIn(c *gin.Context) {
 
 // POST /auth/sign-in
 func AuthTrySignIn(c *gin.Context) {
+	// db
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("users")
+
+	// cookies
+	cookies := sessions.Default(c)
 
 	// validate auth form
 	var authform SignInForm
@@ -84,7 +88,11 @@ func AuthTrySignIn(c *gin.Context) {
 
 		if n, _ := s.Find(query).Count(); n > 0 {
 			// success logged in
-			// set auth header
+			// set auth cookie
+			cookies.Set("name", authform.Username)
+			cookies.Set("token", token)
+			cookies.Save()
+
 			c.Redirect(302, "/posts")
 		} else {
 			// aww no logged in
@@ -136,5 +144,4 @@ func AuthTryRegister(c *gin.Context) {
 			c.Redirect(302, "/auth/register")
 		}
 	}
-
 }
