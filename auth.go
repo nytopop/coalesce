@@ -5,6 +5,7 @@ package main
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/contrib/sessions"
@@ -24,16 +25,14 @@ type RegisterForm struct {
 }
 
 type User struct {
-	Id    bson.ObjectId `bson:"_id,omitempty"`
-	Name  string        `bson:"name"`
-	Token string        `bson:"token"`
+	Id          bson.ObjectId `bson:"_id,omitempty"`
+	Name        string        `bson:"name"`
+	Token       string        `bson:"token"`
+	AccessLevel int           `bson:"accesslevel"`
 }
 
-// implement groups with a middleware per group, call it a realm
-
-// modified auth middleware
-// checks if session cookie matches real account
-func AnyUserAuth() gin.HandlerFunc {
+// check if user is auth'd at the supplied access level
+func AccessLevelAuth(level int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// db
 		session := globalSession.Copy()
@@ -46,10 +45,20 @@ func AnyUserAuth() gin.HandlerFunc {
 		query := bson.M{
 			"name":  cookies.Get("name"),
 			"token": cookies.Get("token"),
+			//"accesslevel": level,
 		}
 
-		if n, _ := s.Find(query).Count(); n > 0 {
-			c.Set("name", cookies.Get("name"))
+		user := User{}
+		if err := s.Find(query).One(&user); err != nil {
+			log.Println(err)
+		}
+
+		if user != (User{}) {
+			if user.AccessLevel >= level {
+				c.Set("name", cookies.Get("name"))
+			} else {
+				c.Redirect(302, "/auth/sign-in")
+			}
 		} else {
 			c.Redirect(302, "/auth/sign-in")
 		}
@@ -131,9 +140,11 @@ func AuthTryRegister(c *gin.Context) {
 			hash := sha512.Sum512([]byte(authform.Password))
 			token := hex.EncodeToString(hash[:])
 
+			// create user
 			user := User{
-				Name:  authform.Username,
-				Token: token,
+				Name:        authform.Username,
+				Token:       token,
+				AccessLevel: 1,
 			}
 
 			// write db
@@ -146,6 +157,7 @@ func AuthTryRegister(c *gin.Context) {
 	}
 }
 
+// Create the admin user
 func CreateAdmin() {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("users")
@@ -155,8 +167,9 @@ func CreateAdmin() {
 	token := hex.EncodeToString(hash[:])
 
 	admin := User{
-		Name:  "admin",
-		Token: token,
+		Name:        "admin",
+		Token:       token,
+		AccessLevel: 2,
 	}
 
 	query := bson.M{

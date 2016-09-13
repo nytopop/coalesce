@@ -2,22 +2,13 @@
 
 package main
 
-import (
-	"html/template"
-	"log"
-	"net/http"
-	"time"
-
-	"github.com/gin-gonic/gin"
-	"github.com/russross/blackfriday"
-
-	"gopkg.in/mgo.v2/bson"
-)
+import "github.com/gin-gonic/gin"
 
 func PagesHome(c *gin.Context) {
 	c.Redirect(302, "/posts")
 }
 
+/*
 func PagesView(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("pages")
@@ -68,3 +59,4 @@ func PagesTryNew(c *gin.Context) {
 		c.Redirect(302, "/pages")
 	}
 }
+*/

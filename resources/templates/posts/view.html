@@ -19,11 +19,8 @@
 			<h2>Comments</h2>
 		</header>
 		<p>
-		<form method="post" action="/posts/comment">
+		<form method="post" action="/comments/new">
 			<input type="hidden" name="postid" id="postid" value="{{ .Post.Id.Hex }}">
-
-			<label for="author">Author</label>
-			<input type="text" name="author" id="author" required>
 
 			<label for="body">Body</label>
 			<textarea id="body" name="body" required></textarea>
@@ -32,8 +29,13 @@
 		</form>
 		</p>
 		{{ range $k, $v := .Comments }}
-			{{ $v.Author }}
+			{{ range $i := N $v.Depth}}
+			    &nbsp;
+			{{ end }}
+			<div>
+			<strong>{{ $v.Author }} @ {{ $v.Timestamp }}</strong>
 			<p>{{ $v.Body }}</p>
+			</div>
 		{{ end }}
 	</div>
 </div>
