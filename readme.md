@@ -19,16 +19,16 @@ Pages
 Posts
 Comments
 
-Images
+finish auth scheme
+milestone: pages
+milestone: commenting system
+  threaded comments
+  each Post has a Comments document,
+  
 
+need to expand the json structure in template format
 
-[milestones]
-get auth working
-  detect signed in user, store cookie
-  working sign in, sign off
-  all operations check auth level
-
-User CRUD
-Post CRUD
-Page CRUD
-Image CRUD
+range through .Comments
+  range through .Replies
+	range through .Replies
+	  recurse until empty

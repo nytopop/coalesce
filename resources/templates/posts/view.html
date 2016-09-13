@@ -18,8 +18,21 @@
 		<header>
 			<h2>Comments</h2>
 		</header>
-		{{ range $k, $v := .Post.Comments }}
-			{{ $v.Author }} wrote:
+		<p>
+		<form method="post" action="/posts/comment">
+			<input type="hidden" name="postid" id="postid" value="{{ .Post.Id.Hex }}">
+
+			<label for="author">Author</label>
+			<input type="text" name="author" id="author" required>
+
+			<label for="body">Body</label>
+			<textarea id="body" name="body" required></textarea>
+
+			<button type="submit">Submit</button>
+		</form>
+		</p>
+		{{ range $k, $v := .Comments }}
+			{{ $v.Author }}
 			<p>{{ $v.Body }}</p>
 		{{ end }}
 	</div>

@@ -19,6 +19,8 @@ var globalSession, _ = mgo.Dial(cfg.Database.Host)
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	CreateAdmin()
+
 	//gin.SetMode(gin.ReleaseMode)
 
 	r := gin.New()
@@ -37,18 +39,19 @@ func main() {
 
 	// routes
 	r.Static("/static", cfg.Server.Static)
+	authorized := r.Group("/", AnyUserAuth())
 	r.GET("/", PagesHome)
 	r.GET("/img", ImgHome)
 	r.GET("/img/thumb/:id", ImgThumb)
 	r.GET("/img/view/:id", ImgView)
-
 	r.POST("/img/new", ImgUpload)
 
 	r.GET("/posts", PostsHome)
 	r.GET("/posts/view/:id", PostsView)
-	authorized := r.Group("/posts/new", AnyUserAuth())
-	authorized.GET("/", PostsNew)
-	authorized.POST("/", PostsTryNew)
+	authorized.GET("/posts/new", PostsNew)
+	authorized.POST("/posts/new", PostsTryNew)
+	r.POST("/posts/comment", PostsTryComment)
+	r.POST("/posts/comment/reply", PostsTryCommentReply)
 
 	r.GET("/auth/sign-in", AuthSignIn)
 	r.GET("/auth/register", AuthRegister)

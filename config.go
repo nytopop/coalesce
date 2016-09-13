@@ -11,9 +11,10 @@ type Config struct {
 		Password string
 	}
 	Server struct {
-		Hostname string
-		Static   string
-		Template string
+		AdminPassword string
+		Hostname      string
+		Static        string
+		Template      string
 	}
 	Site struct {
 		Title       string

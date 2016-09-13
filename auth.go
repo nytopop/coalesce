@@ -141,7 +141,30 @@ func AuthTryRegister(c *gin.Context) {
 				// do stuff
 			}
 
-			c.Redirect(302, "/auth/register")
+			c.Redirect(302, "/posts")
 		}
+	}
+}
+
+func CreateAdmin() {
+	session := globalSession.Copy()
+	s := session.DB(cfg.Database.Name).C("users")
+
+	// no existing user, good 2 go
+	hash := sha512.Sum512([]byte(cfg.Server.AdminPassword))
+	token := hex.EncodeToString(hash[:])
+
+	admin := User{
+		Name:  "admin",
+		Token: token,
+	}
+
+	query := bson.M{
+		"name": "admin",
+	}
+
+	// write db
+	if _, err := s.Upsert(&query, &admin); err != nil {
+		// do stuff
 	}
 }
