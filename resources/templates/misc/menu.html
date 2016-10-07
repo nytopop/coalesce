@@ -1,6 +1,7 @@
 {{ define "misc/menu.html" }}
 <!-- Menu -->
 <nav id="menu">
+<h4>{{ .User }}</h4>
 <h2>Menu</h2>
 <ul>
 <li><a href="/posts">Posts</a></li>
@@ -8,6 +9,7 @@
 <li><a href="/img">Images</a></li>
 <li><a href="/auth/sign-in">Sign in</a></li>
 <li><a href="/auth/register">Register</a></li>
+<li><a href="/auth/sign-out">Sign out</a></li>
 </ul>
 </nav>
 {{ end }}

@@ -34,13 +34,15 @@ func main() {
 	store := sessions.NewCookieStore([]byte(secret))
 	pub.Use(sessions.Sessions(cfg.Site.Title, store))
 
+	// authentication
+	pub.Use(AuthCheckpoint())
+	//users := pub.Group("/", AccessLevelAuth(1))
+	editors := pub.Group("/", AccessLevelAuth(2))
+
 	// templates
 	pub.LoadHTMLGlob(cfg.Server.Template)
 
 	// routes
-	users := pub.Group("/", AccessLevelAuth(1))
-	editors := pub.Group("/", AccessLevelAuth(2))
-
 	pub.Static("/static", cfg.Server.Static)
 
 	pub.GET("/", PagesHome)
@@ -54,11 +56,12 @@ func main() {
 	editors.GET("/posts/new", PostsNew)
 	editors.POST("/posts/new", PostsTryNew)
 
-	users.POST("/comments/new", CommentsTryNew)
-	users.POST("/comments/reply", CommentsTryReply)
+	pub.POST("/comments/new", CommentsTryNew)
+	pub.POST("/comments/reply", CommentsTryReply)
 
 	pub.GET("/auth/sign-in", AuthSignIn)
 	pub.POST("/auth/sign-in", AuthTrySignIn)
+	pub.GET("/auth/sign-out", AuthSignOut)
 	pub.GET("/auth/register", AuthRegister)
 	pub.POST("/auth/register", AuthTryRegister)
 

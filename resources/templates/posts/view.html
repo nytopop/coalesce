@@ -13,31 +13,7 @@
 		</p>
 	</div>
 
-	<br>
-	<div class="inner">
-		<header>
-			<h2>Comments</h2>
-		</header>
-		<p>
-		<form method="post" action="/comments/new">
-			<input type="hidden" name="postid" id="postid" value="{{ .Post.Id.Hex }}">
-
-			<label for="body">Body</label>
-			<textarea id="body" name="body" required></textarea>
-
-			<button type="submit">Submit</button>
-		</form>
-		</p>
-		{{ range $k, $v := .Comments }}
-			{{ range $i := N $v.Depth}}
-			    &nbsp;
-			{{ end }}
-			<div>
-			<strong>{{ $v.Author }} @ {{ $v.Timestamp }}</strong>
-			<p>{{ $v.Body }}</p>
-			</div>
-		{{ end }}
-	</div>
+		{{ template "posts/comments.html" . }}
 </div>
 {{ template "misc/footer.html" . }}
 {{ end }}

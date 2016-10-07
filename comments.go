@@ -32,6 +32,11 @@ type Comment struct {
 	Replies   []bson.ObjectId `bson:"replies"`
 }
 
+// returns length of indentation
+func (c Comment) Indent() int {
+	return c.Depth * 10
+}
+
 // recursive comment chain flattener, single tree
 func (c Comment) Tree() []Comment {
 	// load db session
@@ -53,10 +58,8 @@ func (c Comment) Tree() []Comment {
 				log.Println(err)
 			}
 
-			// iterate through next comment
-			for _, vv := range next.Tree() {
-				tree = append(tree, vv)
-			}
+			// recurse!
+			tree = append(tree, next.Tree()...)
 		}
 	}
 	return tree
@@ -75,7 +78,6 @@ func CommentsTryNew(c *gin.Context) {
 		id := bson.ObjectIdHex(hexid)
 
 		comment := Comment{
-			//Author:    cform.Author,
 			PostId:    id,
 			Author:    c.MustGet("name").(string),
 			Body:      cform.Body,

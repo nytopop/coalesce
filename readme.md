@@ -2,6 +2,17 @@
 
 Lightning fast blogging CMS
 
+'feed'
+go ahead, take a nibble
+
+[features!]
+'feed' based posting system
+  your feeds
+  topic based
+  restricted, public, 
+hierarchical comments on each post
+
+
 [go]
 auth.go middleware
 form validation (auth, write)
@@ -19,16 +30,11 @@ Pages
 Posts
 Comments
 
-finish auth scheme
+TODO
+
 milestone: pages
 milestone: commenting system
   threaded comments
-  each Post has a Comments document,
-  
+  each Post has a Comments document
 
-need to expand the json structure in template format
-
-range through .Comments
-  range through .Replies
-	range through .Replies
-	  recurse until empty
+error page

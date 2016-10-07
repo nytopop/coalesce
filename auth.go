@@ -5,7 +5,6 @@ package main
 import (
 	"crypto/sha512"
 	"encoding/hex"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/contrib/sessions"
@@ -31,38 +30,29 @@ type User struct {
 	AccessLevel int           `bson:"accesslevel"`
 }
 
-// check if user is auth'd at the supplied access level
-func AccessLevelAuth(level int) gin.HandlerFunc {
+// set name, authlevel
+func AuthCheckpoint() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// db
-		session := globalSession.Copy()
-		s := session.DB(cfg.Database.Name).C("users")
-
 		// cookies
 		cookies := sessions.Default(c)
 
-		// check if user exists, and is val by token
-		query := bson.M{
-			"name":  cookies.Get("name"),
-			"token": cookies.Get("token"),
-			//"accesslevel": level,
-		}
-
-		user := User{}
-		if err := s.Find(query).One(&user); err != nil {
-			log.Println(err)
-		}
-
-		if user != (User{}) {
-			if user.AccessLevel >= level {
-				c.Set("name", cookies.Get("name"))
-			} else {
-				c.Redirect(302, "/auth/sign-in")
-			}
+		// check if sign in cookie exists
+		if cookies.Get("name") != nil {
+			c.Set("name", cookies.Get("name"))
+			c.Set("accesslevel", cookies.Get("accesslevel"))
 		} else {
+			c.Set("name", "guest")
+			c.Set("accesslevel", 0)
+		}
+	}
+}
+
+// ensure user is auth'd at access level
+func AccessLevelAuth(level int) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.MustGet("accesslevel").(int) < level {
 			c.Redirect(302, "/auth/sign-in")
 		}
-		// c.MustGet("name") to check
 	}
 }
 
@@ -89,23 +79,28 @@ func AuthTrySignIn(c *gin.Context) {
 		hash := sha512.Sum512([]byte(authform.Password))
 		token := hex.EncodeToString(hash[:])
 
-		// check if user exists, and is val by token
+		// construct query
 		query := bson.M{
 			"name":  authform.Username,
 			"token": token,
 		}
 
-		if n, _ := s.Find(query).Count(); n > 0 {
-			// success logged in
-			// set auth cookie
-			cookies.Set("name", authform.Username)
-			cookies.Set("token", token)
+		// query user
+		user := User{}
+		if err := s.Find(query).One(&user); err != nil {
+			// do error
+		}
+
+		// set cookies
+		if user != (User{}) {
+			// success
+			cookies.Set("name", user.Name)
+			cookies.Set("accesslevel", user.AccessLevel)
 			cookies.Save()
 
 			c.Redirect(302, "/posts")
 		} else {
-			// aww no logged in
-			// redirect sign in
+			// fail
 			c.Redirect(302, "/auth/sign-in")
 		}
 	}
@@ -155,6 +150,17 @@ func AuthTryRegister(c *gin.Context) {
 			c.Redirect(302, "/posts")
 		}
 	}
+}
+
+// GET /auth/sign-out
+func AuthSignOut(c *gin.Context) {
+	// cookies
+	cookies := sessions.Default(c)
+
+	cookies.Clear()
+	cookies.Save()
+
+	c.Redirect(302, "/posts")
 }
 
 // Create the admin user

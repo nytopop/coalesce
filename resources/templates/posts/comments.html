@@ -1,0 +1,35 @@
+{{ define "posts/comments.html" }}
+<br>
+<div class="inner">
+	<header>
+	<h2>Comments</h2>
+	</header>
+
+	<details>
+		<summary>Leave a comment</summary>
+	<p>
+	<form method="post" action="/comments/new">
+		<input type="hidden" name="postid" id="postid" value="{{ .Post.Id.Hex }}">
+
+		<label for="body">Body</label>
+		<textarea id="body" name="body" required></textarea>
+
+		<button type="submit">Submit</button>
+	</form>
+	</p>
+	</details>
+
+	<br>
+
+	{{ range $k, $v := .Comments }}
+	<div class="test">
+		<p style="padding-left: {{ $v.Indent }}px;">
+		<strong>{{ $v.Author }} @ {{ $v.Timestamp }}</strong>
+		<br>
+		{{ $v.Body }}
+		<br>
+		</p>
+	</div>
+	{{ end }}
+</div>
+{{ end }}

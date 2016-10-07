@@ -31,6 +31,7 @@ type Post struct {
 	Tags      []string      `bson:"tags"`
 }
 
+// get entire comment hierarchy of post
 func (p Post) CommentTree() []Comment {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("comments")
@@ -49,9 +50,7 @@ func (p Post) CommentTree() []Comment {
 	// construct tree from root comments
 	tree := []Comment{}
 	for _, v := range comments {
-		for _, vv := range v.Tree() {
-			tree = append(tree, vv)
-		}
+		tree = append(tree, v.Tree()...)
 	}
 
 	return tree
@@ -71,6 +70,7 @@ func PostsHome(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/home.html", gin.H{
 		"Site": cfg.Site,
 		"List": posts,
+		"User": c.MustGet("name"),
 	})
 }
 
@@ -94,6 +94,7 @@ func PostsView(c *gin.Context) {
 		"Site":     cfg.Site,
 		"Post":     post,
 		"Comments": tree,
+		"User":     c.MustGet("name"),
 	})
 }
 
@@ -101,6 +102,7 @@ func PostsView(c *gin.Context) {
 func PostsNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/new.html", gin.H{
 		"Site": cfg.Site,
+		"User": c.MustGet("name"),
 	})
 }
 
