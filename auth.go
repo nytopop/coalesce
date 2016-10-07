@@ -30,6 +30,19 @@ type User struct {
 	AccessLevel int           `bson:"accesslevel"`
 }
 
+// Get active user
+func GetUser(c *gin.Context) User {
+	alevel := c.MustGet("accesslevel").(int)
+	name := c.MustGet("name").(string)
+
+	user := User{
+		Name:        name,
+		AccessLevel: alevel,
+	}
+
+	return user
+}
+
 // set name, authlevel
 func AuthCheckpoint() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -60,6 +73,7 @@ func AccessLevelAuth(level int) gin.HandlerFunc {
 func AuthSignIn(c *gin.Context) {
 	c.HTML(http.StatusOK, "auth/sign-in.html", gin.H{
 		"Site": cfg.Site,
+		"User": GetUser(c),
 	})
 }
 
@@ -111,6 +125,7 @@ func AuthTrySignIn(c *gin.Context) {
 func AuthRegister(c *gin.Context) {
 	c.HTML(http.StatusOK, "auth/register.html", gin.H{
 		"Site": cfg.Site,
+		"User": GetUser(c),
 	})
 }
 

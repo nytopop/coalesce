@@ -61,6 +61,7 @@ func PostsHome(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("posts")
 
+	// get posts
 	posts := []*Post{}
 	if err := s.Find(nil).Sort("-timestamp").Iter().All(&posts); err != nil {
 		log.Println(err)
@@ -70,7 +71,7 @@ func PostsHome(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/home.html", gin.H{
 		"Site": cfg.Site,
 		"List": posts,
-		"User": c.MustGet("name"),
+		"User": GetUser(c),
 	})
 }
 
@@ -83,18 +84,20 @@ func PostsView(c *gin.Context) {
 	hexid := c.Param("id")
 	id := bson.ObjectIdHex(hexid)
 
+	// get post
 	post := Post{}
 	if err := s.FindId(id).One(&post); err != nil {
 		log.Println(err)
 	}
 
+	// get comments
 	tree := post.CommentTree()
 
 	c.HTML(http.StatusOK, "posts/view.html", gin.H{
 		"Site":     cfg.Site,
 		"Post":     post,
 		"Comments": tree,
-		"User":     c.MustGet("name"),
+		"User":     GetUser(c),
 	})
 }
 
@@ -102,7 +105,7 @@ func PostsView(c *gin.Context) {
 func PostsNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/new.html", gin.H{
 		"Site": cfg.Site,
-		"User": c.MustGet("name"),
+		"User": GetUser(c),
 	})
 }
 

@@ -93,6 +93,7 @@ func CommentsTryNew(c *gin.Context) {
 	}
 }
 
+// TODO non-working for now, don't touch
 // POST /comments/reply
 func CommentsTryReply(c *gin.Context) {
 	session := globalSession.Copy()

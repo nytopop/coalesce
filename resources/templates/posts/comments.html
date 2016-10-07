@@ -6,7 +6,7 @@
 	</header>
 
 	<details>
-		<summary>Leave a comment</summary>
+	<summary>Leave a comment</summary>
 	<p>
 	<form method="post" action="/comments/new">
 		<input type="hidden" name="postid" id="postid" value="{{ .Post.Id.Hex }}">
@@ -27,7 +27,6 @@
 		<strong>{{ $v.Author }} @ {{ $v.Timestamp }}</strong>
 		<br>
 		{{ $v.Body }}
-		<br>
 		</p>
 	</div>
 	{{ end }}

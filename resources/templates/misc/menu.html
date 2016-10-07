@@ -1,15 +1,21 @@
 {{ define "misc/menu.html" }}
 <!-- Menu -->
 <nav id="menu">
-<h4>{{ .User }}</h4>
+<h4>{{ .User.Name }}</h4>
 <h2>Menu</h2>
 <ul>
 <li><a href="/posts">Posts</a></li>
+{{ if eq .User.AccessLevel 2 }}
 <li><a href="/posts/new">New Post</a></li>
+{{ end }}
 <li><a href="/img">Images</a></li>
+{{ if eq .User.AccessLevel 0 }}
 <li><a href="/auth/sign-in">Sign in</a></li>
 <li><a href="/auth/register">Register</a></li>
+{{ end }}
+{{ if gt .User.AccessLevel 0 }}
 <li><a href="/auth/sign-out">Sign out</a></li>
+{{ end }}
 </ul>
 </nav>
 {{ end }}

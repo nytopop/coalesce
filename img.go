@@ -41,6 +41,7 @@ func ImgHome(c *gin.Context) {
 	c.HTML(http.StatusOK, "img/home.html", gin.H{
 		"Site": cfg.Site,
 		"List": imgs,
+		"User": GetUser(c),
 	})
 }
 

@@ -57,7 +57,7 @@ func main() {
 	editors.POST("/posts/new", PostsTryNew)
 
 	pub.POST("/comments/new", CommentsTryNew)
-	pub.POST("/comments/reply", CommentsTryReply)
+	//pub.POST("/comments/reply", CommentsTryReply)
 
 	pub.GET("/auth/sign-in", AuthSignIn)
 	pub.POST("/auth/sign-in", AuthTrySignIn)
