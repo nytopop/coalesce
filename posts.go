@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -20,12 +21,21 @@ type PostForm struct {
 	Tags  string `form:"tags" binding:"required"`
 }
 
+type PostEditForm struct {
+	PostId string `form:"postid" binding:"required"`
+	Title  string `form:"title" binding:"required"`
+	Body   string `form:"body" binding:"required"`
+	Tags   string `form:"tags" binding:"required"`
+}
+
 type Post struct {
 	Id        bson.ObjectId `bson:"_id,omitempty"`
 	Title     string        `bson:"title"`
 	Author    string        `bson:"author"`
 	Wordcount int           `bson:"wordcount"`
 	Timestamp time.Time     `bson:"timestamp"`
+	Updated   time.Time     `bson:"updated"`
+	Preview   string        `bson:"preview"`
 	Body      string        `bson:"body"`
 	BodyHTML  template.HTML `bson:"bodyhtml"`
 	Tags      []string      `bson:"tags"`
@@ -122,16 +132,89 @@ func PostsTryNew(c *gin.Context) {
 		// convert markdown
 		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 
+		// split tags to []string, remove lead/trail space
+		tags := strings.Split(postform.Tags, ",")
+		for _, v := range tags {
+			v = strings.TrimSpace(v)
+		}
+
 		post := Post{
 			Title:     postform.Title,
 			Author:    user.Name,
 			Body:      postform.Body,
 			BodyHTML:  template.HTML(body),
 			Timestamp: time.Now(),
+			Updated:   time.Now(),
+			Tags:      tags,
 		}
 
 		if err := s.Insert(&post); err != nil {
 			log.Println(err)
+		}
+
+		c.Redirect(302, "/posts")
+	}
+}
+
+// GET /posts/edit/:id
+func PostsEdit(c *gin.Context) {
+	session := globalSession.Copy()
+	s := session.DB(cfg.Database.Name).C("posts")
+
+	// get obj id from hex
+	hexid := c.Param("id")
+	id := bson.ObjectIdHex(hexid)
+
+	// get post
+	post := Post{}
+	if err := s.FindId(id).One(&post); err != nil {
+		log.Println(err)
+	}
+
+	c.HTML(http.StatusOK, "posts/edit.html", gin.H{
+		"Site": cfg.Site,
+		"Post": post,
+		"User": GetUser(c),
+	})
+}
+
+// POST /posts/edit
+func PostsTryEdit(c *gin.Context) {
+	session := globalSession.Copy()
+	s := session.DB(cfg.Database.Name).C("posts")
+
+	user := GetUser(c)
+
+	// validate form
+	var postform PostEditForm
+	if err := c.Bind(&postform); err == nil {
+		// convert markdown
+		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
+
+		// split tags to []string, remove lead/trail space/commas
+		trimmed := strings.Trim(postform.Tags, ",")
+		tags := strings.Split(trimmed, ",")
+		for _, v := range tags {
+			v = strings.TrimSpace(v)
+		}
+
+		// construct updated post
+		post := Post{
+			Title:    postform.Title,
+			Author:   user.Name,
+			Body:     postform.Body,
+			BodyHTML: template.HTML(body),
+			Updated:  time.Now(),
+			Tags:     tags,
+		}
+
+		// get obj id from hex
+		hexid := postform.PostId
+		id := bson.ObjectIdHex(hexid)
+
+		// update post
+		if err := s.UpdateId(id, post); err != nil {
+			// do error
 		}
 
 		c.Redirect(302, "/posts")

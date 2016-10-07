@@ -43,7 +43,7 @@ user management
 
 post management
   edit[]
-  tags[]
+  tags[x]
   markdown[x]
 
 comment management

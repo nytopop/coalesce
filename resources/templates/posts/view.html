@@ -10,9 +10,13 @@
 		</header>
 		<p>
 		Tags: {{ range $k, $v := .Post.Tags }}{{ $v }}, {{ end }}
+		{{ if eq .User.AccessLevel 2 }}
+		<br>
+		<a href="/posts/edit/{{ .Post.Id.Hex }}">Edit post</a>
+		{{ end }}
 		</p>
 	</div>
-
+	<hr>
 		{{ template "posts/comments.html" . }}
 </div>
 {{ template "misc/footer.html" . }}
