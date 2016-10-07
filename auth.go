@@ -32,8 +32,16 @@ type User struct {
 
 // Get active user
 func GetUser(c *gin.Context) User {
-	alevel := c.MustGet("accesslevel").(int)
-	name := c.MustGet("name").(string)
+	var name string
+	var alevel int
+
+	if x := c.MustGet("accesslevel"); x != nil {
+		alevel = x.(int)
+	}
+
+	if x := c.MustGet("name"); x != nil {
+		name = x.(string)
+	}
 
 	user := User{
 		Name:        name,

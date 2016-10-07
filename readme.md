@@ -32,11 +32,22 @@ milestone: commenting system
   threaded comments
   each Post has a Comments document
 
+drafts
+
 error page
+
 user management
-  crud
+  create[x]
+  edit[]
+  delete[]
+
 post management
-  tags
-  markdown?
+  edit[]
+  tags[]
+  markdown[x]
+
 comment management
-  markdown?
+  create[x]
+  edit[]
+  delete[]
+
