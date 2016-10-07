@@ -14,15 +14,10 @@ hierarchical comments on each post
 
 
 [go]
-auth.go middleware
-form validation (auth, write)
 error.go
 
 [html]
-sign in page / form
-client side form validation
 Recent Posts tooltip
-index page
 
 [editable elements]
 Users
@@ -38,3 +33,10 @@ milestone: commenting system
   each Post has a Comments document
 
 error page
+user management
+  crud
+post management
+  tags
+  markdown?
+comment management
+  markdown?

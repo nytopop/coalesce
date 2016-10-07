@@ -114,6 +114,8 @@ func PostsTryNew(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("posts")
 
+	user := GetUser(c)
+
 	// validate form
 	var postform PostForm
 	if err := c.Bind(&postform); err == nil {
@@ -121,9 +123,8 @@ func PostsTryNew(c *gin.Context) {
 		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 
 		post := Post{
-			//Author:    postform.Author,
 			Title:     postform.Title,
-			Author:    c.MustGet("name").(string),
+			Author:    user.Name,
 			Body:      postform.Body,
 			BodyHTML:  template.HTML(body),
 			Timestamp: time.Now(),
