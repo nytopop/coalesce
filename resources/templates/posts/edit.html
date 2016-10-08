@@ -16,9 +16,6 @@
 <label for="body">Body (markdown)</label>
 <textarea id="body" name="body" required>{{ .Post.Body }}</textarea>
 
-<label for="tags">Tags</label>
-<input type="text" id="tags" name="tags" value="{{ range $k, $v := .Post.Tags }}{{ $v }},{{ end }}" required>
-
 <button type="submit">Submit</button>
 </form>
 

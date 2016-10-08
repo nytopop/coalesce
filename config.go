@@ -11,6 +11,7 @@ type Config struct {
 		Password string
 	}
 	Server struct {
+		ApiKey        string
 		AdminPassword string
 		Hostname      string
 		Static        string

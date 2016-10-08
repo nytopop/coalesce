@@ -6,7 +6,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,14 +17,14 @@ import (
 type PostForm struct {
 	Title string `form:"title" binding:"required"`
 	Body  string `form:"body" binding:"required"`
-	Tags  string `form:"tags" binding:"required"`
+	//Tags  string `form:"tags" binding:"required"`
 }
 
 type PostEditForm struct {
 	PostId string `form:"postid" binding:"required"`
 	Title  string `form:"title" binding:"required"`
 	Body   string `form:"body" binding:"required"`
-	Tags   string `form:"tags" binding:"required"`
+	//Tags   string `form:"tags" binding:"required"`
 }
 
 type Post struct {
@@ -35,7 +34,6 @@ type Post struct {
 	Wordcount int           `bson:"wordcount"`
 	Timestamp time.Time     `bson:"timestamp"`
 	Updated   time.Time     `bson:"updated"`
-	Preview   string        `bson:"preview"`
 	Body      string        `bson:"body"`
 	BodyHTML  template.HTML `bson:"bodyhtml"`
 	Tags      []string      `bson:"tags"`
@@ -132,12 +130,16 @@ func PostsTryNew(c *gin.Context) {
 		// convert markdown
 		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 
+		// create tags using cortical.io
+		tags := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
+
 		// split tags to []string, remove lead/trail space
-		tags := strings.Split(postform.Tags, ",")
+		/*tags := strings.Split(postform.Tags, ",")
 		for _, v := range tags {
 			v = strings.TrimSpace(v)
-		}
+		}*/
 
+		// construct post
 		post := Post{
 			Title:     postform.Title,
 			Author:    user.Name,
@@ -191,12 +193,15 @@ func PostsTryEdit(c *gin.Context) {
 		// convert markdown
 		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 
+		// create tags using cortical.io
+		tags := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
+
 		// split tags to []string, remove lead/trail space/commas
-		trimmed := strings.Trim(postform.Tags, ",")
+		/*trimmed := strings.Trim(postform.Tags, ",")
 		tags := strings.Split(trimmed, ",")
 		for _, v := range tags {
 			v = strings.TrimSpace(v)
-		}
+		}*/
 
 		// construct updated post
 		post := Post{
