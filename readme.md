@@ -1,9 +1,6 @@
 # coalesce
 
-Lightning fast blogging CMS
-
-'feed'
-go ahead, take a nibble
+content for you
 
 [features!]
 'feed' based posting system
@@ -12,27 +9,17 @@ go ahead, take a nibble
   restricted, public, 
 hierarchical comments on each post
 
-
-[go]
-error.go
-
-[html]
-Recent Posts tooltip
-
-[editable elements]
-Users
-Pages
-Posts
-Comments
-
 TODO
+streams/feeds
+user pages
+full crud of stuff
 
-milestone: pages
 milestone: commenting system
   threaded comments
   each Post has a Comments document
 
-drafts
+cortical.io, should generate tags from text, not markup
+cortical.io, should use async to generate tags, not as the post happens
 
 error page
 
@@ -42,8 +29,10 @@ user management
   delete[]
 
 post management
-  edit[]
+  delete[]
+  edit[x]
   tags[x]
+  create[x]
   markdown[x]
 
 comment management

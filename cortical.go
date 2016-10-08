@@ -9,7 +9,6 @@ import (
 )
 
 func GetKeywordsForText(key, text string) []string {
-	//key := "255035d0-8ce2-11e6-a057-97f4c970893c"
 	url := "http://api.cortical.io:80/rest/text/keywords?retina_name=en_associative"
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(text)))

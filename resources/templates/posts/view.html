@@ -5,14 +5,16 @@
 <div id="main">
 	<div class="inner">
 		<header>
+			<strong>{{ .Post.Timestamp }} by {{ .Post.Author }}</strong>
 			<h1>{{ .Post.Title }}</h1>
 			<p>{{ .Post.BodyHTML }}</p>
 		</header>
 		<p>
-		Tags: {{ range $k, $v := .Post.Tags }}{{ $v }}, {{ end }}
+		<strong>Tags:</strong> {{ range $k, $v := .Post.Tags }}{{ $v }}, {{ end }}
 		{{ if eq .User.AccessLevel 2 }}
 		<br>
-		<a href="/posts/edit/{{ .Post.Id.Hex }}">Edit post</a>
+		<a href="/posts/edit/{{ .Post.Id.Hex }}">Edit</a> - 
+		<a href="/posts/del/{{ .Post.Id.Hex }}">Delete</a>
 		{{ end }}
 		</p>
 	</div>

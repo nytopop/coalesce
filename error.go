@@ -2,10 +2,16 @@
 
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
 
-// function to abort context and send error
+	"github.com/gin-gonic/gin"
+)
 
-func SendError(c *gin.Context) {
-
+// GET /error
+func ErrorHome(c *gin.Context) {
+	c.HTML(http.StatusOK, "misc/error.html", gin.H{
+		"Site": cfg.Site,
+		"User": GetUser(c),
+	})
 }

@@ -133,12 +133,6 @@ func PostsTryNew(c *gin.Context) {
 		// create tags using cortical.io
 		tags := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
 
-		// split tags to []string, remove lead/trail space
-		/*tags := strings.Split(postform.Tags, ",")
-		for _, v := range tags {
-			v = strings.TrimSpace(v)
-		}*/
-
 		// construct post
 		post := Post{
 			Title:     postform.Title,
@@ -154,7 +148,8 @@ func PostsTryNew(c *gin.Context) {
 			log.Println(err)
 		}
 
-		c.Redirect(302, "/posts")
+		posturl := "/posts"
+		c.Redirect(302, posturl)
 	}
 }
 
@@ -196,32 +191,33 @@ func PostsTryEdit(c *gin.Context) {
 		// create tags using cortical.io
 		tags := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
 
-		// split tags to []string, remove lead/trail space/commas
-		/*trimmed := strings.Trim(postform.Tags, ",")
-		tags := strings.Split(trimmed, ",")
-		for _, v := range tags {
-			v = strings.TrimSpace(v)
-		}*/
-
-		// construct updated post
-		post := Post{
-			Title:    postform.Title,
-			Author:   user.Name,
-			Body:     postform.Body,
-			BodyHTML: template.HTML(body),
-			Updated:  time.Now(),
-			Tags:     tags,
-		}
-
 		// get obj id from hex
 		hexid := postform.PostId
 		id := bson.ObjectIdHex(hexid)
+
+		// get timestamp from orig post
+		oldpost := Post{}
+		if err := s.FindId(id).One(&oldpost); err != nil {
+			log.Println(err)
+		}
+
+		// construct updated post
+		post := Post{
+			Title:     postform.Title,
+			Author:    user.Name,
+			Body:      postform.Body,
+			BodyHTML:  template.HTML(body),
+			Timestamp: oldpost.Timestamp,
+			Updated:   time.Now(),
+			Tags:      tags,
+		}
 
 		// update post
 		if err := s.UpdateId(id, post); err != nil {
 			// do error
 		}
 
-		c.Redirect(302, "/posts")
+		posturl := "/posts/view/" + hexid
+		c.Redirect(302, posturl)
 	}
 }

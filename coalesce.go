@@ -67,6 +67,8 @@ func main() {
 	pub.GET("/auth/register", AuthRegister)
 	pub.POST("/auth/register", AuthTryRegister)
 
+	pub.GET("/error", ErrorHome)
+
 	pub.Run()
 	// pub.Run(":3000") for a hard coded port
 }
