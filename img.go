@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"image"
 	"image/jpeg"
-	"log"
 	"net/http"
 	"time"
 
@@ -33,9 +32,8 @@ func ImgHome(c *gin.Context) {
 
 	imgs := []*Img{}
 	if err := gfs.Find(nil).Sort("uploadDate").Iter().All(&imgs); err != nil {
-		//handle the err
-		log.Println(err)
-		return
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 
 	c.HTML(http.StatusOK, "img/home.html", gin.H{
@@ -58,15 +56,15 @@ func ImgThumb(c *gin.Context) {
 	// open photo by id
 	file, err := gfs.OpenId(id)
 	if err != nil {
-		log.Println(err)
-		return
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 
 	// make image
 	img, _, err := image.Decode(file)
 	if err != nil {
-		log.Println(err)
-		return
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 	file.Close()
 
@@ -76,8 +74,8 @@ func ImgThumb(c *gin.Context) {
 	// encode
 	buf := new(bytes.Buffer)
 	if err := jpeg.Encode(buf, m, nil); err != nil {
-		log.Println(err)
-		return
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 
 	// send
@@ -97,8 +95,8 @@ func ImgView(c *gin.Context) {
 	// open photo by id
 	file, err := gfs.OpenId(id)
 	if err != nil {
-		log.Println(err)
-		return
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 
 	// format
@@ -118,8 +116,8 @@ func ImgUpload(c *gin.Context) {
 
 	//req := c.Request
 	if err := c.Request.ParseMultipartForm(36777216); err != nil {
-		log.Println(err)
-		return
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 
 	for _, v := range c.Request.MultipartForm.File {
@@ -129,33 +127,33 @@ func ImgUpload(c *gin.Context) {
 			// do batch processing
 			file, err := e.Open()
 			if err != nil {
-				log.Println(err)
-				return
+				c.Error(err)
+				c.Redirect(302, "/error")
 			}
 
 			// read into memory
 			if _, err := buf.ReadFrom(file); err != nil {
-				log.Println(err)
-				return
+				c.Error(err)
+				c.Redirect(302, "/error")
 			}
 
 			// create empty file in gfs
 			img, err := gfs.Create(e.Filename)
 			if err != nil {
-				log.Println(err)
-				return
+				c.Error(err)
+				c.Redirect(302, "/error")
 			}
 
 			// write to db file
 			if _, err := img.Write(buf.Bytes()); err != nil {
-				log.Println(err)
-				return
+				c.Error(err)
+				c.Redirect(302, "/error")
 			}
 
 			// close
 			if err := img.Close(); err != nil {
-				log.Println(err)
-				return
+				c.Error(err)
+				c.Redirect(302, "/error")
 			}
 		}
 	}

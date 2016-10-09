@@ -90,6 +90,9 @@ func CommentsTryNew(c *gin.Context) {
 		// redirect to orig post
 		redir := "/posts/view/" + hexid
 		c.Redirect(302, redir)
+	} else {
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 }
 

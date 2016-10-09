@@ -44,13 +44,15 @@ func main() {
 
 	// routes
 	pub.Static("/static", cfg.Server.Static)
-
 	pub.GET("/", PagesHome)
+
+	// /img
 	pub.GET("/img", ImgHome)
 	pub.GET("/img/thumb/:id", ImgThumb)
 	pub.GET("/img/view/:id", ImgView)
 	editors.POST("/img/new", ImgUpload)
 
+	// /posts
 	pub.GET("/posts", PostsHome)
 	pub.GET("/posts/view/:id", PostsView)
 	editors.GET("/posts/new", PostsNew)
@@ -58,15 +60,18 @@ func main() {
 	editors.GET("/posts/edit/:id", PostsEdit)
 	editors.POST("/posts/edit", PostsTryEdit)
 
+	// /comments
 	pub.POST("/comments/new", CommentsTryNew)
 	//pub.POST("/comments/reply", CommentsTryReply)
 
+	// /auth
 	pub.GET("/auth/sign-in", AuthSignIn)
 	pub.POST("/auth/sign-in", AuthTrySignIn)
 	pub.GET("/auth/sign-out", AuthSignOut)
 	pub.GET("/auth/register", AuthRegister)
 	pub.POST("/auth/register", AuthTryRegister)
 
+	// /error
 	pub.GET("/error", ErrorHome)
 
 	pub.Run()

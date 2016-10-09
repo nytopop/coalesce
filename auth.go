@@ -71,6 +71,7 @@ func AuthCheckpoint() gin.HandlerFunc {
 // ensure user is auth'd at access level
 func AccessLevelAuth(level int) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// BUG: mustget borked
 		if c.MustGet("accesslevel").(int) < level {
 			c.Redirect(302, "/auth/sign-in")
 		}
@@ -110,7 +111,8 @@ func AuthTrySignIn(c *gin.Context) {
 		// query user
 		user := User{}
 		if err := s.Find(query).One(&user); err != nil {
-			// do error
+			c.Error(err)
+			c.Redirect(302, "/error")
 		}
 
 		// set cookies
@@ -125,6 +127,9 @@ func AuthTrySignIn(c *gin.Context) {
 			// fail
 			c.Redirect(302, "/auth/sign-in")
 		}
+	} else {
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 
 }
@@ -167,11 +172,15 @@ func AuthTryRegister(c *gin.Context) {
 
 			// write db
 			if err := s.Insert(&user); err != nil {
-				// do stuff
+				c.Error(err)
+				c.Redirect(302, "/error")
 			}
 
 			c.Redirect(302, "/posts")
 		}
+	} else {
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 }
 
@@ -207,6 +216,6 @@ func CreateAdmin() {
 
 	// write db
 	if _, err := s.Upsert(&query, &admin); err != nil {
-		// do stuff
+		// handle error
 	}
 }

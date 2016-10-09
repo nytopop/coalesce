@@ -72,8 +72,8 @@ func PostsHome(c *gin.Context) {
 	// get posts
 	posts := []*Post{}
 	if err := s.Find(nil).Sort("-timestamp").Iter().All(&posts); err != nil {
-		log.Println(err)
-		return
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 
 	c.HTML(http.StatusOK, "posts/home.html", gin.H{
@@ -95,7 +95,8 @@ func PostsView(c *gin.Context) {
 	// get post
 	post := Post{}
 	if err := s.FindId(id).One(&post); err != nil {
-		log.Println(err)
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 
 	// get comments
@@ -131,7 +132,11 @@ func PostsTryNew(c *gin.Context) {
 		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 
 		// create tags using cortical.io
-		tags := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
+		tags, err := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
+		if err != nil {
+			c.Error(err)
+			c.Redirect(302, "/error")
+		}
 
 		// construct post
 		post := Post{
@@ -145,11 +150,15 @@ func PostsTryNew(c *gin.Context) {
 		}
 
 		if err := s.Insert(&post); err != nil {
-			log.Println(err)
+			c.Error(err)
+			c.Redirect(302, "/error")
 		}
 
 		posturl := "/posts"
 		c.Redirect(302, posturl)
+	} else {
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 }
 
@@ -165,7 +174,8 @@ func PostsEdit(c *gin.Context) {
 	// get post
 	post := Post{}
 	if err := s.FindId(id).One(&post); err != nil {
-		log.Println(err)
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 
 	c.HTML(http.StatusOK, "posts/edit.html", gin.H{
@@ -189,7 +199,11 @@ func PostsTryEdit(c *gin.Context) {
 		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 
 		// create tags using cortical.io
-		tags := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
+		tags, err := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
+		if err != nil {
+			c.Error(err)
+			c.Redirect(302, "/error")
+		}
 
 		// get obj id from hex
 		hexid := postform.PostId
@@ -198,6 +212,8 @@ func PostsTryEdit(c *gin.Context) {
 		// get timestamp from orig post
 		oldpost := Post{}
 		if err := s.FindId(id).One(&oldpost); err != nil {
+			c.Error(err)
+			c.Redirect(302, "/error")
 			log.Println(err)
 		}
 
@@ -214,10 +230,14 @@ func PostsTryEdit(c *gin.Context) {
 
 		// update post
 		if err := s.UpdateId(id, post); err != nil {
-			// do error
+			c.Error(err)
+			c.Redirect(302, "/error")
 		}
 
 		posturl := "/posts/view/" + hexid
 		c.Redirect(302, posturl)
+	} else {
+		c.Error(err)
+		c.Redirect(302, "/error")
 	}
 }
