@@ -241,3 +241,21 @@ func PostsTryEdit(c *gin.Context) {
 		c.Redirect(302, "/error")
 	}
 }
+
+// GET /posts/del/:id
+func PostsTryDelete(c *gin.Context) {
+	session := globalSession.Copy()
+	s := session.DB(cfg.Database.Name).C("posts")
+
+	// get obj id from hex
+	hexid := c.Param("id")
+	id := bson.ObjectIdHex(hexid)
+
+	// delete post
+	if err := s.RemoveId(id); err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	c.Redirect(302, "/posts")
+}

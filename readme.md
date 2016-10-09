@@ -29,7 +29,7 @@ user management
   delete[]
 
 post management
-  delete[]
+  delete[x]
   edit[x]
   tags[x]
   create[x]

@@ -59,6 +59,7 @@ func main() {
 	editors.POST("/posts/new", PostsTryNew)
 	editors.GET("/posts/edit/:id", PostsEdit)
 	editors.POST("/posts/edit", PostsTryEdit)
+	editors.GET("/posts/del/:id", PostsTryDelete)
 
 	// /comments
 	pub.POST("/comments/new", CommentsTryNew)
