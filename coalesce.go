@@ -36,8 +36,10 @@ func main() {
 
 	// authentication
 	pub.Use(AuthCheckpoint())
-	users := pub.Group("/", AccessLevelAuth(1))
+	// pub - 0
+	commentors := pub.Group("/", AccessLevelAuth(1))
 	editors := pub.Group("/", AccessLevelAuth(2))
+	admins := pub.Group("/", AccessLevelAuth(3))
 
 	// templates
 	pub.LoadHTMLGlob(cfg.Server.Template)
@@ -73,7 +75,10 @@ func main() {
 	pub.POST("/auth/register", AuthTryRegister)
 
 	// /users
-	users.GET("/users/me", UsersMe)
+	commentors.GET("/users/me", UsersMe)
+	admins.GET("/users/all", UsersAll)
+	admins.GET("/users/promote/:name", UsersTryPromote)
+	admins.GET("/users/demote/:name", UsersTryDemote)
 
 	// /error
 	pub.GET("/error", ErrorHome)

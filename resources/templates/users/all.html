@@ -1,0 +1,13 @@
+{{ define "users/all.html" }}
+{{ template "misc/header.html" . }}		
+{{ template "misc/menu.html" . }}
+<!-- Main -->
+<div id="main">
+{{ range $k, $v := .Users }}
+<div class="inner">
+	<strong>{{ $v.Name }} - {{ $v.AccessLevel }}</strong>
+</div>
+{{ end }}
+</div>
+{{ template "misc/footer.html" . }}
+{{ end }}

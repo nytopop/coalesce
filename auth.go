@@ -207,7 +207,7 @@ func CreateAdmin() {
 	admin := User{
 		Name:        "admin",
 		Token:       token,
-		AccessLevel: 2,
+		AccessLevel: 3,
 	}
 
 	query := bson.M{

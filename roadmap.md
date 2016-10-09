@@ -40,6 +40,12 @@ comment management
   edit[]
   delete[]
 
+
+0 - guest
+1 - commentor
+2 - editor
+3 - admin
+
 TODO
   allow users to post, if verified
   ensure auth works on per user basis, CRUD for own posts only
@@ -47,3 +53,4 @@ TODO
   make 'verified' users, which are allowed to post, flag in user db
   build edit/publish/conceal/delete button on /user/me page
   build search function
+  change ".List" to ".Comments" and ".Posts"

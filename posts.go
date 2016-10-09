@@ -77,7 +77,7 @@ func PostsHome(c *gin.Context) {
 		c.Redirect(302, "/error")
 	}
 
-	c.HTML(http.StatusOK, "posts/home.html", gin.H{
+	c.HTML(http.StatusOK, "posts/all.html", gin.H{
 		"Site": cfg.Site,
 		"List": posts,
 		"User": GetUser(c),
