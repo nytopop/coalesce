@@ -21,7 +21,7 @@ milestone: commenting system
 cortical.io, should generate tags from text, not markup
 cortical.io, should use async to generate tags, not as the post happens
 
-error page
+error page[x]
 
 user management
   create[x]
@@ -40,3 +40,10 @@ comment management
   edit[]
   delete[]
 
+TODO
+  allow users to post, if verified
+  ensure auth works on per user basis, CRUD for own posts only
+  make user management from admin, CRUD / verify
+  make 'verified' users, which are allowed to post, flag in user db
+  build edit/publish/conceal/delete button on /user/me page
+  build search function

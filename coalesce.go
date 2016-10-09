@@ -36,7 +36,7 @@ func main() {
 
 	// authentication
 	pub.Use(AuthCheckpoint())
-	//users := pub.Group("/", AccessLevelAuth(1))
+	users := pub.Group("/", AccessLevelAuth(1))
 	editors := pub.Group("/", AccessLevelAuth(2))
 
 	// templates
@@ -71,6 +71,9 @@ func main() {
 	pub.GET("/auth/sign-out", AuthSignOut)
 	pub.GET("/auth/register", AuthRegister)
 	pub.POST("/auth/register", AuthTryRegister)
+
+	// /users
+	users.GET("/users/me", UsersMe)
 
 	// /error
 	pub.GET("/error", ErrorHome)

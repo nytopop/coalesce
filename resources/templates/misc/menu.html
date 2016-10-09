@@ -1,7 +1,11 @@
 {{ define "misc/menu.html" }}
 <!-- Menu -->
 <nav id="menu">
-<h4>{{ .User.Name }}</h4>
+	{{ if gt .User.AccessLevel 0 }}
+	<h4><a href="/users/me">{{ .User.Name }}</a></h4>
+	{{ else }}
+	<h4>{{ .User.Name }}</h4>
+	{{ end }}
 <h2>Menu</h2>
 <ul>
 <li><a href="/posts">Posts</a></li>

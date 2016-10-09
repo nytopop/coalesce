@@ -17,14 +17,12 @@ import (
 type PostForm struct {
 	Title string `form:"title" binding:"required"`
 	Body  string `form:"body" binding:"required"`
-	//Tags  string `form:"tags" binding:"required"`
 }
 
 type PostEditForm struct {
 	PostId string `form:"postid" binding:"required"`
 	Title  string `form:"title" binding:"required"`
 	Body   string `form:"body" binding:"required"`
-	//Tags   string `form:"tags" binding:"required"`
 }
 
 type Post struct {
@@ -32,12 +30,15 @@ type Post struct {
 	Title     string        `bson:"title"`
 	Author    string        `bson:"author"`
 	Wordcount int           `bson:"wordcount"`
+	Draft     bool          `bson:"draft"` //if true, no publish
 	Timestamp time.Time     `bson:"timestamp"`
 	Updated   time.Time     `bson:"updated"`
 	Body      string        `bson:"body"`
 	BodyHTML  template.HTML `bson:"bodyhtml"`
 	Tags      []string      `bson:"tags"`
 }
+
+// TODO posts should be authed to a specific user
 
 // get entire comment hierarchy of post
 func (p Post) CommentTree() []Comment {
@@ -214,7 +215,6 @@ func PostsTryEdit(c *gin.Context) {
 		if err := s.FindId(id).One(&oldpost); err != nil {
 			c.Error(err)
 			c.Redirect(302, "/error")
-			log.Println(err)
 		}
 
 		// construct updated post

@@ -53,6 +53,7 @@ func (c Comment) Tree() []Comment {
 			// go deeper
 			next := Comment{}
 
+			// BUG: does this do 1 query for _every_ comment????
 			// get the referenced comment
 			if err := s.FindId(v).One(&next); err != nil {
 				log.Println(err)
@@ -85,6 +86,8 @@ func CommentsTryNew(c *gin.Context) {
 			Depth:     0,
 		}
 		if err := s.Insert(&comment); err != nil {
+			c.Error(err)
+			c.Redirect(302, "/error")
 		}
 
 		// redirect to orig post
