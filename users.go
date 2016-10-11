@@ -56,13 +56,60 @@ func UsersAll(c *gin.Context) {
 }
 
 // TODO promote/demote should ask to reauthenticate
+// TODO generic user priv change function
 
 // GET /users/promote/:name
 func UsersTryPromote(c *gin.Context) {
-	// change accesslevel to 2
+	session := globalSession.Copy()
+	s := session.DB(cfg.Database.Name).C("users")
+
+	// query for user
+	name := c.Param("name")
+	query := bson.M{
+		"name": name,
+	}
+
+	// get user
+	user := User{}
+	if err := s.Find(query).One(&user); err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	// update user
+	user.AccessLevel = 2
+	if err := s.Update(query, user); err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	c.Redirect(302, "/users/all")
 }
 
 // GET /users/demote/:name
 func UsersTryDemote(c *gin.Context) {
+	session := globalSession.Copy()
+	s := session.DB(cfg.Database.Name).C("users")
 
+	// query for user
+	name := c.Param("name")
+	query := bson.M{
+		"name": name,
+	}
+
+	// get user
+	user := User{}
+	if err := s.Find(query).One(&user); err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	// update user
+	user.AccessLevel = 1
+	if err := s.Update(query, user); err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	c.Redirect(302, "/users/all")
 }

@@ -5,7 +5,8 @@
 <div id="main">
 {{ range $k, $v := .Users }}
 <div class="inner">
-	<strong>{{ $v.Name }} - {{ $v.AccessLevel }}</strong>
+<strong>{{ $v.Name }} - {{ $v.AccessLevel }}</strong>
+{{ if eq $v.AccessLevel 1 }}<a href="/users/promote/{{ $v.Name }}">Promote</a>{{ else if eq $v.AccessLevel 2}}<a href="/users/demote/{{ $v.Name }}">Demote</a>{{ end }}
 </div>
 {{ end }}
 </div>
