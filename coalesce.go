@@ -48,7 +48,7 @@ func main() {
 	pub.GET("/", PagesHome)
 
 	// /img
-	pub.GET("/img", ImgAll)
+	editors.GET("/img", ImgAll)
 	pub.GET("/img/thumb/:id", ImgThumb)
 	pub.GET("/img/view/:id", ImgView)
 	editors.POST("/img/new", ImgUpload)

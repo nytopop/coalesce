@@ -10,14 +10,16 @@ Coalesce runs as a single binary using the native net/http webserver. It is desi
 
 ## Technologies
 
-[Gin Web Framework](https://github.com/gin-gonic/gin)
+Web frameword [gin-gonic/gin](https://github.com/gin-gonic/gin)
 
-MongoDB via [mgo](https://github.com/go-mgo/mgo)
+MongoDB via [go-mgo/mgo](https://github.com/go-mgo/mgo)
 
 Tag generation via [cortical.io](http://www.cortical.io/)
 
-Markdown processing via [Blackfriday](https://github.com/russross/blackfriday)
+Markdown processing via [russross/blackfriday](https://github.com/russross/blackfriday)
+
+Image thumbnailing via [nfnt/resize](https://github.com/nfnt/resize)
 
 HTML5 template from [HTML5 UP](https://html5up.net/)
 
-Configuration with [gcfg](https://github.com/go-gcfg/gcfg/tree/v1.2.0)
+Configuration via [go-gcfg/gcfg](https://github.com/go-gcfg/gcfg/tree/v1.2.0)

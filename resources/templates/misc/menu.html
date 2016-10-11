@@ -9,11 +9,11 @@
 <h2>Menu</h2>
 <ul>
 <li><a href="/posts">Posts</a></li>
-<li><a href="/img">Images</a></li>
 {{ if eq .User.AccessLevel 3 }}
 <li><a href="/users/all">Users</a></li>
 {{ end }}
 {{ if gt .User.AccessLevel 1 }}
+<li><a href="/img">Images</a></li>
 <li><a href="/posts/new">New Post</a></li>
 {{ end }}
 {{ if eq .User.AccessLevel 0 }}
