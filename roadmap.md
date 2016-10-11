@@ -46,3 +46,7 @@ delete[]
 
 
 images and thumbs collections
+
+[completion]
+deployment scripts or docker?
+database credentials
