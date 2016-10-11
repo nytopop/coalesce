@@ -82,6 +82,32 @@ func PostsAll(c *gin.Context) {
 	})
 }
 
+// GET /posts/me
+func PostsMe(c *gin.Context) {
+	session := globalSession.Copy()
+	s := session.DB(cfg.Database.Name).C("posts")
+
+	user := GetUser(c)
+
+	// query for user
+	query := bson.M{
+		"author": user.Name,
+	}
+
+	// get posts
+	posts := []*Post{}
+	if err := s.Find(query).Sort("-timestamp").Iter().All(&posts); err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	c.HTML(http.StatusOK, "posts/me.html", gin.H{
+		"Site":  cfg.Site,
+		"Posts": posts,
+		"User":  user,
+	})
+}
+
 // GET /posts/view/:id
 func PostsView(c *gin.Context) {
 	session := globalSession.Copy()
@@ -277,7 +303,7 @@ func PostsTryDelete(c *gin.Context) {
 			c.Redirect(302, "/error")
 		}
 
-		c.Redirect(302, "/users/me")
+		c.Redirect(302, "/posts/me")
 	} else {
 		c.Redirect(302, "/auth/sign-in")
 	}

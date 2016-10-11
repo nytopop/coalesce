@@ -9,33 +9,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// TODO: should return comments and posts
-// GET /users/me
-func UsersMe(c *gin.Context) {
-	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("posts")
-
-	user := GetUser(c)
-
-	// query for user
-	query := bson.M{
-		"author": user.Name,
-	}
-
-	// get posts
-	posts := []*Post{}
-	if err := s.Find(query).Sort("-timestamp").Iter().All(&posts); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
-	}
-
-	c.HTML(http.StatusOK, "users/me.html", gin.H{
-		"Site": cfg.Site,
-		"List": posts,
-		"User": user,
-	})
-}
-
 // GET /users/all
 func UsersAll(c *gin.Context) {
 	session := globalSession.Copy()
@@ -54,9 +27,6 @@ func UsersAll(c *gin.Context) {
 		"User":  GetUser(c),
 	})
 }
-
-// TODO promote/demote should ask to reauthenticate
-// TODO generic user priv change function
 
 // GET /users/promote/:name
 func UsersTryPromote(c *gin.Context) {

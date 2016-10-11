@@ -1,15 +1,18 @@
-{{ define "users/me.html" }}
+{{ define "posts/me.html" }}
 {{ template "misc/header.html" . }}		
 {{ template "misc/menu.html" . }}
 <!-- Main -->
 <div id="main">
-{{ range $k, $v := .List }}
 <div class="inner">
+<h2>Your posts, {{ .User.Name }}</h2>
+
+{{ range $k, $v := .Posts }}
 <strong><a href="/posts/view/{{ $v.Id.Hex }}">{{ $v.Title }}</a></strong> -- 
 <a href="/posts/edit/{{ $v.Id.Hex }}">Edit</a>
 <a href="/posts/del/{{ $v.Id.Hex }}" onclick="return confirm('Are you sure?')">Delete</a>
-</div>
 {{ end }}
+
+</div>
 </div>
 {{ template "misc/footer.html" . }}
 {{ end }}

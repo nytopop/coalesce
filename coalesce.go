@@ -57,6 +57,7 @@ func main() {
 	// /posts
 	pub.GET("/posts", PostsAll)
 	pub.GET("/posts/view/:id", PostsView)
+	commentors.GET("/posts/me", PostsMe)
 	editors.GET("/posts/new", PostsNew)
 	editors.POST("/posts/new", PostsTryNew)
 	editors.GET("/posts/edit/:id", PostsEdit)
@@ -75,7 +76,6 @@ func main() {
 	pub.POST("/auth/register", AuthTryRegister)
 
 	// /users
-	commentors.GET("/users/me", UsersMe)
 	admins.GET("/users/all", UsersAll)
 	admins.GET("/users/promote/:name", UsersTryPromote)
 	admins.GET("/users/demote/:name", UsersTryDemote)

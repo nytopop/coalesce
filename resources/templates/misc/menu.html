@@ -2,7 +2,7 @@
 <!-- Menu -->
 <nav id="menu">
 	{{ if gt .User.AccessLevel 0 }}
-	<h4><a href="/users/me">{{ .User.Name }}</a></h4>
+	<h4><a href="/posts/me">{{ .User.Name }}</a></h4>
 	{{ else }}
 	<h4>{{ .User.Name }}</h4>
 	{{ end }}
