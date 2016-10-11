@@ -15,35 +15,40 @@ import (
 	"github.com/nfnt/resize"
 )
 
+// TODO this entire module needs to be rewritten, is ugly and terrible
+// BUG non jpegs don't thumbnail
+// BUG thumbnails generated live...
+// BUG inconsistent naming
+
 type Img struct {
-	Id         bson.ObjectId `schema:"id" bson:"_id,omitempty"`
+	Id         bson.ObjectId `bson:"_id,omitempty"`
 	Length     int           `bson:"length"`
 	ChunkSize  int           `bson:"chunkSize"`
-	UploadDate time.Time     `schema:"uploadDate" bson:"uploadDate"`
-	Md5        string        `schema:"md5" bson:"md5"`
-	Filename   string        `schema:"filename" bson:"filename"`
+	UploadDate time.Time     `bson:"uploadDate"`
+	Md5        string        `bson:"md5"`
+	Filename   string        `bson:"filename"`
 }
 
-// home
+// GET /img
 func ImgAll(c *gin.Context) {
 	session := globalSession.Copy()
 	db := session.DB(cfg.Database.Name)
 	gfs := db.GridFS("fs")
 
 	imgs := []*Img{}
-	if err := gfs.Find(nil).Sort("uploadDate").Iter().All(&imgs); err != nil {
+	if err := gfs.Find(nil).Sort("-uploadDate").Iter().All(&imgs); err != nil {
 		c.Error(err)
 		c.Redirect(302, "/error")
 	}
 
-	c.HTML(http.StatusOK, "img/home.html", gin.H{
+	c.HTML(http.StatusOK, "img/all.html", gin.H{
 		"Site": cfg.Site,
 		"List": imgs,
 		"User": GetUser(c),
 	})
 }
 
-// thumb
+// GET /img/thumb/:id
 func ImgThumb(c *gin.Context) {
 	session := globalSession.Copy()
 	db := session.DB(cfg.Database.Name)
@@ -82,7 +87,7 @@ func ImgThumb(c *gin.Context) {
 	c.Data(http.StatusOK, "image/jpg", buf.Bytes())
 }
 
-// view
+// GET /img/view/:id
 func ImgView(c *gin.Context) {
 	session := globalSession.Copy()
 	db := session.DB(cfg.Database.Name)
@@ -108,8 +113,16 @@ func ImgView(c *gin.Context) {
 	c.Data(http.StatusOK, "image/jpg", buf.Bytes())
 }
 
-// upload
-func ImgUpload(c *gin.Context) {
+// GET /img/new
+func ImgNew(c *gin.Context) {
+	c.HTML(http.StatusOK, "img/new.html", gin.H{
+		"Site": cfg.Site,
+		"User": GetUser(c),
+	})
+}
+
+// POST /img/new
+func ImgTryNew(c *gin.Context) {
 	session := globalSession.Copy()
 	db := session.DB(cfg.Database.Name)
 	gfs := db.GridFS("fs")

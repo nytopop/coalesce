@@ -10,7 +10,7 @@ Coalesce runs as a single binary using the native net/http webserver. It is desi
 
 ## Technologies
 
-Web frameword [gin-gonic/gin](https://github.com/gin-gonic/gin)
+Web framework [gin-gonic/gin](https://github.com/gin-gonic/gin)
 
 MongoDB via [go-mgo/mgo](https://github.com/go-mgo/mgo)
 

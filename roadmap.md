@@ -34,4 +34,15 @@ comment management
   delete[]
 
 build search function
-social media footer
+image thumbnails should pregenerate
+fix /img everything
+
+
+/img CRD
+
+create[]
+read[]
+delete[]
+
+
+images and thumbs collections

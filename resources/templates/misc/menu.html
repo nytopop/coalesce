@@ -15,6 +15,7 @@
 {{ if gt .User.AccessLevel 1 }}
 <li><a href="/img">Images</a></li>
 <li><a href="/posts/new">New Post</a></li>
+<li><a href="/img/new">Upload Images</a></li>
 {{ end }}
 {{ if eq .User.AccessLevel 0 }}
 <li><a href="/auth/sign-in">Sign in</a></li>

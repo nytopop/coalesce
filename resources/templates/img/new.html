@@ -1,0 +1,18 @@
+{{ define "img/new.html" }}
+{{ template "misc/header.html" . }}		
+{{ template "misc/menu.html" . }}
+<!-- Main -->
+<div id="main">
+<div class="inner">
+<h2>Upload Images</h2>
+<section>
+<form method="post" action="/img/new" enctype="multipart/form-data">
+<input type="file" name="file" accept="image/*" multiple>
+						
+<button type="submit">submit</button>
+</form>
+</section>
+</div>
+</div>
+{{ template "misc/footer.html" . }}
+{{ end }}
