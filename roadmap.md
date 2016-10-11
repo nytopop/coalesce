@@ -2,13 +2,6 @@
 
 content for you
 
-[features!]
-'feed' based posting system
-  your feeds
-  topic based
-  restricted, public, 
-hierarchical comments on each post
-
 TODO
 streams/feeds
 user pages
@@ -40,18 +33,5 @@ comment management
   edit[]
   delete[]
 
-
-0 - guest
-1 - commentor
-2 - editor
-3 - admin
-
-TODO
-  do not allow delete admin
-  allow users to post, if verified[x]
-  ensure auth works on per user basis, CRUD for own posts only
-  make user management from admin, CRUD / verify
-  make 'verified' users, which are allowed to post, flag in user db
-  build edit/publish/conceal/delete button on /user/me page
-  build search function
-  change ".List" to ".Comments" and ".Posts"
+build search function
+social media footer

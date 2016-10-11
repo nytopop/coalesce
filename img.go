@@ -25,7 +25,7 @@ type Img struct {
 }
 
 // home
-func ImgHome(c *gin.Context) {
+func ImgAll(c *gin.Context) {
 	session := globalSession.Copy()
 	db := session.DB(cfg.Database.Name)
 	gfs := db.GridFS("fs")

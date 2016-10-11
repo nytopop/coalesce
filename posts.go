@@ -38,8 +38,6 @@ type Post struct {
 	Tags      []string      `bson:"tags"`
 }
 
-// TODO posts should be authed to a specific user
-
 // get entire comment hierarchy of post
 func (p Post) CommentTree() []Comment {
 	session := globalSession.Copy()
@@ -66,7 +64,7 @@ func (p Post) CommentTree() []Comment {
 }
 
 // GET /posts
-func PostsHome(c *gin.Context) {
+func PostsAll(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("posts")
 
@@ -78,9 +76,9 @@ func PostsHome(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "posts/all.html", gin.H{
-		"Site": cfg.Site,
-		"List": posts,
-		"User": GetUser(c),
+		"Site":  cfg.Site,
+		"Posts": posts,
+		"User":  GetUser(c),
 	})
 }
 

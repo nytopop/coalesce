@@ -36,7 +36,6 @@ func main() {
 
 	// authentication
 	pub.Use(AuthCheckpoint())
-	// pub - 0
 	commentors := pub.Group("/", AccessLevelAuth(1))
 	editors := pub.Group("/", AccessLevelAuth(2))
 	admins := pub.Group("/", AccessLevelAuth(3))
@@ -49,14 +48,13 @@ func main() {
 	pub.GET("/", PagesHome)
 
 	// /img
-	pub.GET("/img", ImgHome)
+	pub.GET("/img", ImgAll)
 	pub.GET("/img/thumb/:id", ImgThumb)
 	pub.GET("/img/view/:id", ImgView)
 	editors.POST("/img/new", ImgUpload)
 
 	// /posts
-	// BUG these must auth for user
-	pub.GET("/posts", PostsHome)
+	pub.GET("/posts", PostsAll)
 	pub.GET("/posts/view/:id", PostsView)
 	editors.GET("/posts/new", PostsNew)
 	editors.POST("/posts/new", PostsTryNew)
