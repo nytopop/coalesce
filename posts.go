@@ -179,11 +179,18 @@ func PostsEdit(c *gin.Context) {
 		c.Redirect(302, "/error")
 	}
 
-	c.HTML(http.StatusOK, "posts/edit.html", gin.H{
-		"Site": cfg.Site,
-		"Post": post,
-		"User": GetUser(c),
-	})
+	user := GetUser(c)
+
+	if user.Name == post.Author || user.Name == "admin" {
+		c.HTML(http.StatusOK, "posts/edit.html", gin.H{
+			"Site": cfg.Site,
+			"Post": post,
+			"User": user,
+		})
+	} else {
+		c.Redirect(302, "/auth/sign-in")
+	}
+
 }
 
 // POST /posts/edit
@@ -196,15 +203,6 @@ func PostsTryEdit(c *gin.Context) {
 	// validate form
 	var postform PostEditForm
 	if err := c.Bind(&postform); err == nil {
-		// convert markdown
-		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
-
-		// create tags using cortical.io
-		tags, err := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
-		if err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
-		}
 
 		// get obj id from hex
 		hexid := postform.PostId
@@ -217,25 +215,39 @@ func PostsTryEdit(c *gin.Context) {
 			c.Redirect(302, "/error")
 		}
 
-		// construct updated post
-		post := Post{
-			Title:     postform.Title,
-			Author:    user.Name,
-			Body:      postform.Body,
-			BodyHTML:  template.HTML(body),
-			Timestamp: oldpost.Timestamp,
-			Updated:   time.Now(),
-			Tags:      tags,
-		}
+		if user.Name == oldpost.Author || user.Name == "admin" {
+			// convert markdown
+			body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 
-		// update post
-		if err := s.UpdateId(id, post); err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
-		}
+			// create tags using cortical.io
+			tags, err := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
+			if err != nil {
+				c.Error(err)
+				c.Redirect(302, "/error")
+			}
 
-		posturl := "/posts/view/" + hexid
-		c.Redirect(302, posturl)
+			// construct updated post
+			post := Post{
+				Title:     postform.Title,
+				Author:    user.Name,
+				Body:      postform.Body,
+				BodyHTML:  template.HTML(body),
+				Timestamp: oldpost.Timestamp,
+				Updated:   time.Now(),
+				Tags:      tags,
+			}
+
+			// update post
+			if err := s.UpdateId(id, post); err != nil {
+				c.Error(err)
+				c.Redirect(302, "/error")
+			}
+
+			posturl := "/posts/view/" + hexid
+			c.Redirect(302, posturl)
+		} else {
+			c.Redirect(302, "/auth/sign-in")
+		}
 	} else {
 		c.Error(err)
 		c.Redirect(302, "/error")
@@ -247,15 +259,28 @@ func PostsTryDelete(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(cfg.Database.Name).C("posts")
 
+	user := GetUser(c)
+
 	// get obj id from hex
 	hexid := c.Param("id")
 	id := bson.ObjectIdHex(hexid)
 
-	// delete post
-	if err := s.RemoveId(id); err != nil {
+	// get post
+	post := Post{}
+	if err := s.FindId(id).One(&post); err != nil {
 		c.Error(err)
 		c.Redirect(302, "/error")
 	}
 
-	c.Redirect(302, "/users/me")
+	if user.Name == post.Author || user.Name == "admin" {
+		// delete post
+		if err := s.RemoveId(id); err != nil {
+			c.Error(err)
+			c.Redirect(302, "/error")
+		}
+
+		c.Redirect(302, "/users/me")
+	} else {
+		c.Redirect(302, "/auth/sign-in")
+	}
 }
