@@ -257,5 +257,5 @@ func PostsTryDelete(c *gin.Context) {
 		c.Redirect(302, "/error")
 	}
 
-	c.Redirect(302, "/posts")
+	c.Redirect(302, "/users/me")
 }

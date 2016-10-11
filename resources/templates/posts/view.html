@@ -11,11 +11,6 @@
 		</header>
 		<p>
 		<strong>Tags:</strong> {{ range $k, $v := .Post.Tags }}{{ $v }}, {{ end }}
-		{{ if eq .User.AccessLevel 2 }}
-		<br>
-		<a href="/posts/edit/{{ .Post.Id.Hex }}">Edit</a> - 
-		<a href="/posts/del/{{ .Post.Id.Hex }}" onclick="return confirm('Are you sure?')">Delete</a>
-		{{ end }}
 		</p>
 	</div>
 	<hr>

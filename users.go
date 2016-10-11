@@ -113,3 +113,25 @@ func UsersTryDemote(c *gin.Context) {
 
 	c.Redirect(302, "/users/all")
 }
+
+// GET /users/del/:name
+func UsersTryDelete(c *gin.Context) {
+	session := globalSession.Copy()
+	s := session.DB(cfg.Database.Name).C("users")
+
+	name := c.Param("name")
+	if name != "admin" {
+		// query
+		query := bson.M{
+			"name": name,
+		}
+
+		// delete user
+		if err := s.Remove(query); err != nil {
+			c.Error(err)
+			c.Redirect(302, "/error")
+		}
+	}
+
+	c.Redirect(302, "/users/all")
+}

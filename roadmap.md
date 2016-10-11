@@ -26,7 +26,7 @@ error page[x]
 user management
   create[x]
   edit[]
-  delete[]
+  delete[x]
 
 post management
   delete[x]
@@ -47,7 +47,8 @@ comment management
 3 - admin
 
 TODO
-  allow users to post, if verified
+  do not allow delete admin
+  allow users to post, if verified[x]
   ensure auth works on per user basis, CRUD for own posts only
   make user management from admin, CRUD / verify
   make 'verified' users, which are allowed to post, flag in user db

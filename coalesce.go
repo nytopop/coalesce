@@ -55,6 +55,7 @@ func main() {
 	editors.POST("/img/new", ImgUpload)
 
 	// /posts
+	// BUG these must auth for user
 	pub.GET("/posts", PostsHome)
 	pub.GET("/posts/view/:id", PostsView)
 	editors.GET("/posts/new", PostsNew)
@@ -79,6 +80,7 @@ func main() {
 	admins.GET("/users/all", UsersAll)
 	admins.GET("/users/promote/:name", UsersTryPromote)
 	admins.GET("/users/demote/:name", UsersTryDemote)
+	admins.GET("/users/del/:name", UsersTryDelete)
 
 	// /error
 	pub.GET("/error", ErrorHome)
