@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/nytopop/coalesce.svg?branch=master)](https://travis-ci.org/nytopop/coalesce)
 
+[![Dockerhub Status](http://dockeri.co/image/nytopop/coalesce)](https://hub.docker.com/r/nytopop/coalesce/)
+
 A lightning fast multi-user blogging platform in Go.
 
 ## Deployment
