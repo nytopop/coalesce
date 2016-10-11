@@ -1,5 +1,7 @@
 # coalesce
 
+[![Build Status](https://travis-ci.org/nytopop/coalesce.svg?branch=master)](https://travis-ci.org/nytopop/coalesce)
+
 A high performance multi-user blogging platform.
 
 ## Technologies
