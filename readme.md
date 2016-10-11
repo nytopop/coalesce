@@ -2,7 +2,11 @@
 
 [![Build Status](https://travis-ci.org/nytopop/coalesce.svg?branch=master)](https://travis-ci.org/nytopop/coalesce)
 
-A high performance multi-user blogging platform.
+A lightning fast multi-user blogging platform in Go.
+
+## Deployment
+
+Coalesce runs as a single binary using the native net/http webserver. It is designed to run behind a reverse proxy such as haproxy / nginx / apache. A mongodb instance is required.
 
 ## Technologies
 
