@@ -6,6 +6,14 @@ A high performance multi-user blogging platform.
 
 ## Technologies
 
-Semantic keyword tags are automatically generated using [cortical.io](cortical.io) for fast and easy SEO of content.
+[Gin Web Framework](https://github.com/gin-gonic/gin)
 
-Markdown is processed using the blackfriday.
+MongoDB via [mgo](https://github.com/go-mgo/mgo)
+
+Tag generation via [cortical.io](http://www.cortical.io/)
+
+Markdown processing via [Blackfriday](https://github.com/russross/blackfriday)
+
+HTML5 template from [HTML5 UP](https://html5up.net/)
+
+Configuration with [gcfg](https://github.com/go-gcfg/gcfg/tree/v1.2.0)
