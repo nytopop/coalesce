@@ -8,6 +8,12 @@ A lightning fast multi-user blogging platform in Go.
 
 Coalesce runs as a single binary using the native net/http webserver. It is designed to run behind a reverse proxy such as haproxy / nginx / apache. A mongodb instance is required.
 
+To run coalesce/mongodb using docker:
+
+    git clone https://github.com/nytopop/coalesce
+    cd coalesce
+    docker-compose up
+
 ## Technologies
 
 Web framework [gin-gonic/gin](https://github.com/gin-gonic/gin)
