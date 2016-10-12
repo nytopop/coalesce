@@ -14,7 +14,11 @@ To run coalesce/mongodb using docker:
     cd coalesce
     docker-compose up
 
+Coalesce will be available on port :8080
+
 ## Technologies
+
+Docker
 
 Web framework [gin-gonic/gin](https://github.com/gin-gonic/gin)
 
@@ -26,6 +30,6 @@ Markdown processing via [russross/blackfriday](https://github.com/russross/black
 
 Image thumbnailing via [nfnt/resize](https://github.com/nfnt/resize)
 
-HTML5 template from [HTML5 UP](https://html5up.net/)
-
 Configuration via [go-gcfg/gcfg](https://github.com/go-gcfg/gcfg/tree/v1.2.0)
+
+HTML5 template from [HTML5 UP](https://html5up.net/)

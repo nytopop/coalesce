@@ -1,52 +1,17 @@
-# coalesce
+# TODO til release
 
-content for you
+detach cortical.io api key from cfg
 
-TODO
-streams/feeds
-user pages
-full crud of stuff
+configuration page, /config. store site config in mongodb
 
-milestone: commenting system
-  threaded comments
-  each Post has a Comments document
+images/thumbnails pregeneration and metadata storage
 
-cortical.io, should generate tags from text, not markup
-cortical.io, should use async to generate tags, not as the post happens
+search function
 
-error page[x]
+cortical.io async, generate from text only
 
-user management
-  create[x]
-  edit[]
-  delete[x]
+output err on /error
 
-post management
-  delete[x]
-  edit[x]
-  tags[x]
-  create[x]
-  markdown[x]
+user profiles
 
-comment management
-  create[x]
-  edit[]
-  delete[]
-
-build search function
-image thumbnails should pregenerate
-fix /img everything
-
-
-/img CRD
-
-create[]
-read[]
-delete[]
-
-
-images and thumbs collections
-
-[completion]
-deployment scripts or docker?
-database credentials
+comment deletion
