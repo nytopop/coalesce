@@ -15,3 +15,5 @@ output err on /error
 user profiles
 
 comment deletion
+
+ansible playbook to install all needed components on a server
