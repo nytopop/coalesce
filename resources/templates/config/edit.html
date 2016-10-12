@@ -1,0 +1,26 @@
+{{ define "config/edit.html" }}
+{{ template "misc/header.html" . }}		
+{{ template "misc/menu.html" . }}
+<!-- Main -->
+<div id="main">
+<div class="inner">
+<header>
+<h1>Edit Post</h1>
+
+<form method="post" action="/posts/edit">
+<input type="hidden" name="postid" id="postid" value="{{ .Post.Id.Hex }}">
+
+<label for="title">Title</label>
+<input type="text" name="title" id="title" value="{{ .Post.Title }}" required>
+
+<label for="body">Body (markdown)</label>
+<textarea id="body" name="body" required>{{ .Post.Body }}</textarea>
+
+<button type="submit">Submit</button>
+</form>
+
+</header>
+</div>
+</div>
+{{ template "misc/footer.html" . }}
+{{ end }}

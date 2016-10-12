@@ -22,6 +22,7 @@ var dbname = os.Getenv("DB_NAME")
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	// BUG: panics if no database connection
 	CreateAdmin()
 
 	gin.SetMode(gin.ReleaseMode)
@@ -44,10 +45,10 @@ func main() {
 	admins := pub.Group("/", AccessLevelAuth(3))
 
 	// templates
-	pub.LoadHTMLGlob(cfg.Server.Template)
+	pub.LoadHTMLGlob("resources/templates/**/*.html")
 
 	// routes
-	pub.Static("/static", cfg.Server.Static)
+	pub.Static("/static", "resources/static")
 	pub.GET("/", PagesHome)
 
 	// /img

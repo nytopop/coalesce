@@ -1,4 +1,6 @@
-# TODO til release
+# TODO for alpha release
+
+rewrite Dockerfile to use binary, don't compile on container
 
 detach cortical.io api key from cfg
 

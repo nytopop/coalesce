@@ -2,14 +2,13 @@
 
 package main
 
+import "github.com/gin-gonic/gin"
+
 // config file
 type Config struct {
 	Server struct {
 		ApiKey        string
 		AdminPassword string
-		Hostname      string
-		Static        string
-		Template      string
 	}
 	Site struct {
 		Title       string
@@ -18,4 +17,19 @@ type Config struct {
 		Github      string
 		Email       string
 	}
+}
+
+// GET /config
+func ConfigEdit(c *gin.Context) {
+	session := globalSession.Copy()
+}
+
+// POST /config/edit
+func ConfigTryEdit(c *gin.Context) {
+
+}
+
+// POST /config/reset
+func ConfigTryReset(c *gin.Context) {
+
 }
