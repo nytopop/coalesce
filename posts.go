@@ -41,7 +41,7 @@ type Post struct {
 // get entire comment hierarchy of post
 func (p Post) CommentTree() []Comment {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("comments")
+	s := session.DB(dbname).C("comments")
 
 	// get all root level comments
 	id := p.Id
@@ -66,7 +66,7 @@ func (p Post) CommentTree() []Comment {
 // GET /posts
 func PostsAll(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("posts")
+	s := session.DB(dbname).C("posts")
 
 	// get posts
 	posts := []*Post{}
@@ -85,7 +85,7 @@ func PostsAll(c *gin.Context) {
 // GET /posts/me
 func PostsMe(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("posts")
+	s := session.DB(dbname).C("posts")
 
 	user := GetUser(c)
 
@@ -111,7 +111,7 @@ func PostsMe(c *gin.Context) {
 // GET /posts/view/:id
 func PostsView(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("posts")
+	s := session.DB(dbname).C("posts")
 
 	// get obj id from hex
 	hexid := c.Param("id")
@@ -146,7 +146,7 @@ func PostsNew(c *gin.Context) {
 // POST /posts/new
 func PostsTryNew(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("posts")
+	s := session.DB(dbname).C("posts")
 
 	user := GetUser(c)
 
@@ -190,7 +190,7 @@ func PostsTryNew(c *gin.Context) {
 // GET /posts/edit/:id
 func PostsEdit(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("posts")
+	s := session.DB(dbname).C("posts")
 
 	// get obj id from hex
 	hexid := c.Param("id")
@@ -220,7 +220,7 @@ func PostsEdit(c *gin.Context) {
 // POST /posts/edit
 func PostsTryEdit(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("posts")
+	s := session.DB(dbname).C("posts")
 
 	user := GetUser(c)
 
@@ -281,7 +281,7 @@ func PostsTryEdit(c *gin.Context) {
 // GET /posts/del/:id
 func PostsTryDelete(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("posts")
+	s := session.DB(dbname).C("posts")
 
 	user := GetUser(c)
 

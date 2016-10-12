@@ -1,0 +1,13 @@
+app:
+  build: .
+  links:
+    - database
+  environment:
+    - DB_NAME=coalesce
+  ports:
+    - 8080:8080
+  expose:
+    - 8080
+database:
+  image: mongo
+  command: mongod --smallfiles --quiet --logpath=/dev/null

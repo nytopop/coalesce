@@ -32,7 +32,7 @@ type Img struct {
 // GET /img
 func ImgAll(c *gin.Context) {
 	session := globalSession.Copy()
-	db := session.DB(cfg.Database.Name)
+	db := session.DB(dbname)
 	gfs := db.GridFS("fs")
 
 	imgs := []*Img{}
@@ -51,7 +51,7 @@ func ImgAll(c *gin.Context) {
 // GET /img/thumb/:id
 func ImgThumb(c *gin.Context) {
 	session := globalSession.Copy()
-	db := session.DB(cfg.Database.Name)
+	db := session.DB(dbname)
 	gfs := db.GridFS("fs")
 
 	// get obj id from hex
@@ -90,7 +90,7 @@ func ImgThumb(c *gin.Context) {
 // GET /img/view/:id
 func ImgView(c *gin.Context) {
 	session := globalSession.Copy()
-	db := session.DB(cfg.Database.Name)
+	db := session.DB(dbname)
 	gfs := db.GridFS("fs")
 
 	// get obj id from hex
@@ -124,7 +124,7 @@ func ImgNew(c *gin.Context) {
 // POST /img/new
 func ImgTryNew(c *gin.Context) {
 	session := globalSession.Copy()
-	db := session.DB(cfg.Database.Name)
+	db := session.DB(dbname)
 	gfs := db.GridFS("fs")
 
 	//req := c.Request

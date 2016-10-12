@@ -41,7 +41,7 @@ func (c Comment) Indent() int {
 func (c Comment) Tree() []Comment {
 	// load db session
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("comments")
+	s := session.DB(dbname).C("comments")
 
 	// add self to result set
 	tree := []Comment{}
@@ -69,7 +69,7 @@ func (c Comment) Tree() []Comment {
 // POST /comments/new
 func CommentsTryNew(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("comments")
+	s := session.DB(dbname).C("comments")
 
 	// validate
 	var cform CommentForm
@@ -103,7 +103,7 @@ func CommentsTryNew(c *gin.Context) {
 // POST /comments/reply
 func CommentsTryReply(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("comments")
+	s := session.DB(dbname).C("comments")
 
 	// validate
 	var rform CommentReplyForm

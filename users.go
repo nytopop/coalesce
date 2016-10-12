@@ -12,7 +12,7 @@ import (
 // GET /users/all
 func UsersAll(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("users")
+	s := session.DB(dbname).C("users")
 
 	// query for all users
 	users := []*User{}
@@ -31,7 +31,7 @@ func UsersAll(c *gin.Context) {
 // GET /users/promote/:name
 func UsersTryPromote(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("users")
+	s := session.DB(dbname).C("users")
 
 	// query for user
 	name := c.Param("name")
@@ -59,7 +59,7 @@ func UsersTryPromote(c *gin.Context) {
 // GET /users/demote/:name
 func UsersTryDemote(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("users")
+	s := session.DB(dbname).C("users")
 
 	// query for user
 	name := c.Param("name")
@@ -87,7 +87,7 @@ func UsersTryDemote(c *gin.Context) {
 // GET /users/del/:name
 func UsersTryDelete(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("users")
+	s := session.DB(dbname).C("users")
 
 	name := c.Param("name")
 	if name != "admin" {

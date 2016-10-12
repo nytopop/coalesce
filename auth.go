@@ -90,7 +90,7 @@ func AuthSignIn(c *gin.Context) {
 func AuthTrySignIn(c *gin.Context) {
 	// db
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("users")
+	s := session.DB(dbname).C("users")
 
 	// cookies
 	cookies := sessions.Default(c)
@@ -145,7 +145,7 @@ func AuthRegister(c *gin.Context) {
 // POST /auth/register
 func AuthTryRegister(c *gin.Context) {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("users")
+	s := session.DB(dbname).C("users")
 
 	// validate form
 	var authform RegisterForm
@@ -198,7 +198,7 @@ func AuthSignOut(c *gin.Context) {
 // Create the admin user
 func CreateAdmin() {
 	session := globalSession.Copy()
-	s := session.DB(cfg.Database.Name).C("users")
+	s := session.DB(dbname).C("users")
 
 	// no existing user, good 2 go
 	hash := sha512.Sum512([]byte(cfg.Server.AdminPassword))

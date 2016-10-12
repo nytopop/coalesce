@@ -4,12 +4,6 @@ package main
 
 // config file
 type Config struct {
-	Database struct {
-		Host     string
-		Name     string
-		Username string
-		Password string
-	}
 	Server struct {
 		ApiKey        string
 		AdminPassword string

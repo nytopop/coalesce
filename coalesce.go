@@ -3,6 +3,7 @@
 package main
 
 import (
+	"os"
 	"runtime"
 
 	gcfg "gopkg.in/gcfg.v1"
@@ -14,14 +15,16 @@ import (
 
 var cfg = Config{}
 var err = gcfg.ReadFileInto(&cfg, "coalesce.cfg")
-var globalSession, _ = mgo.Dial(cfg.Database.Host)
+
+var globalSession, _ = mgo.Dial(os.Getenv("DATABASE_PORT_27017_TCP_ADDR"))
+var dbname = os.Getenv("DB_NAME")
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	CreateAdmin()
 
-	//gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	pub := gin.New()
 
