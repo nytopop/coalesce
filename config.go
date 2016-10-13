@@ -21,7 +21,10 @@ type Config struct {
 
 // GET /config
 func ConfigEdit(c *gin.Context) {
-	session := globalSession.Copy()
+	//	session := globalSession.Copy()
+	//	s := session.DB(dbname).C("config")
+
+	// geet those configs
 }
 
 // POST /config/edit

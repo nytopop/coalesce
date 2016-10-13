@@ -12,7 +12,8 @@ To run coalesce/mongodb using docker:
 
     git clone https://github.com/nytopop/coalesce
     cd coalesce
-    docker-compose up
+    make
+    make run
 
 Coalesce will be available on port :8080
 

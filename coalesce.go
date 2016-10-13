@@ -85,6 +85,10 @@ func main() {
 	admins.GET("/users/demote/:name", UsersTryDemote)
 	admins.GET("/users/del/:name", UsersTryDelete)
 
+	// /config
+	admins.GET("/config", ConfigEdit)
+	admins.POST("/config/edit", ConfigTryEdit)
+
 	// /error
 	pub.GET("/error", ErrorHome)
 
