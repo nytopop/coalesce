@@ -11,7 +11,7 @@ import (
 // GET /error
 func ErrorHome(c *gin.Context) {
 	c.HTML(http.StatusOK, "misc/error.html", gin.H{
-		"Site": cfg.Site,
+		"Site": GetConf(),
 		"User": GetUser(c),
 	})
 }

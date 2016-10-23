@@ -17,6 +17,9 @@
 <li><a href="/posts/new">New Post</a></li>
 <li><a href="/img/new">Upload Images</a></li>
 {{ end }}
+{{ if eq .User.AccessLevel 3 }}
+<li><a href="/config">Config</a></li>
+{{ end }}
 {{ if eq .User.AccessLevel 0 }}
 <li><a href="/auth/sign-in">Sign in</a></li>
 <li><a href="/auth/register">Register</a></li>

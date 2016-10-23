@@ -76,7 +76,7 @@ func PostsAll(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "posts/all.html", gin.H{
-		"Site":  cfg.Site,
+		"Site":  GetConf(),
 		"Posts": posts,
 		"User":  GetUser(c),
 	})
@@ -102,7 +102,7 @@ func PostsMe(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "posts/me.html", gin.H{
-		"Site":  cfg.Site,
+		"Site":  GetConf(),
 		"Posts": posts,
 		"User":  user,
 	})
@@ -128,7 +128,7 @@ func PostsView(c *gin.Context) {
 	tree := post.CommentTree()
 
 	c.HTML(http.StatusOK, "posts/view.html", gin.H{
-		"Site":     cfg.Site,
+		"Site":     GetConf(),
 		"Post":     post,
 		"Comments": tree,
 		"User":     GetUser(c),
@@ -138,7 +138,7 @@ func PostsView(c *gin.Context) {
 // GET /posts/new
 func PostsNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "posts/new.html", gin.H{
-		"Site": cfg.Site,
+		"Site": GetConf(),
 		"User": GetUser(c),
 	})
 }
@@ -148,6 +148,7 @@ func PostsTryNew(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(dbname).C("posts")
 
+	conf := GetConf()
 	user := GetUser(c)
 
 	// validate form
@@ -157,7 +158,7 @@ func PostsTryNew(c *gin.Context) {
 		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 
 		// create tags using cortical.io
-		tags, err := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
+		tags, err := GetKeywordsForText(conf.CorticalApiKey, postform.Body)
 		if err != nil {
 			c.Error(err)
 			c.Redirect(302, "/error")
@@ -207,7 +208,7 @@ func PostsEdit(c *gin.Context) {
 
 	if user.Name == post.Author || user.Name == "admin" {
 		c.HTML(http.StatusOK, "posts/edit.html", gin.H{
-			"Site": cfg.Site,
+			"Site": GetConf(),
 			"Post": post,
 			"User": user,
 		})
@@ -222,6 +223,7 @@ func PostsTryEdit(c *gin.Context) {
 	session := globalSession.Copy()
 	s := session.DB(dbname).C("posts")
 
+	conf := GetConf()
 	user := GetUser(c)
 
 	// validate form
@@ -244,7 +246,7 @@ func PostsTryEdit(c *gin.Context) {
 			body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 
 			// create tags using cortical.io
-			tags, err := GetKeywordsForText(cfg.Server.ApiKey, postform.Body)
+			tags, err := GetKeywordsForText(conf.CorticalApiKey, postform.Body)
 			if err != nil {
 				c.Error(err)
 				c.Redirect(302, "/error")

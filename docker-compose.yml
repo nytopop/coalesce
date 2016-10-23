@@ -4,6 +4,7 @@ app:
     - database
   environment:
     - DB_NAME=coalesce
+    - ADMIN_PASS=password
   ports:
     - 8080:8080
   expose:
@@ -11,3 +12,7 @@ app:
 database:
   image: mongo
   command: mongod --smallfiles --quiet --logpath=/dev/null
+  ports:
+    - 27017:27017
+  expose:
+    - 27017

@@ -22,7 +22,7 @@ func UsersAll(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "users/all.html", gin.H{
-		"Site":  cfg.Site,
+		"Site":  GetConf(),
 		"Users": users,
 		"User":  GetUser(c),
 	})

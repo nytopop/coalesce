@@ -42,7 +42,7 @@ func ImgAll(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "img/all.html", gin.H{
-		"Site": cfg.Site,
+		"Site": GetConf(),
 		"List": imgs,
 		"User": GetUser(c),
 	})
@@ -116,7 +116,7 @@ func ImgView(c *gin.Context) {
 // GET /img/new
 func ImgNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "img/new.html", gin.H{
-		"Site": cfg.Site,
+		"Site": GetConf(),
 		"User": GetUser(c),
 	})
 }

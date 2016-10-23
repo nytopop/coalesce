@@ -6,15 +6,11 @@ import (
 	"os"
 	"runtime"
 
-	gcfg "gopkg.in/gcfg.v1"
 	mgo "gopkg.in/mgo.v2"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
-
-var cfg = Config{}
-var err = gcfg.ReadFileInto(&cfg, "coalesce.cfg")
 
 var globalSession, _ = mgo.Dial(os.Getenv("DATABASE_PORT_27017_TCP_ADDR"))
 var dbname = os.Getenv("DB_NAME")
@@ -24,6 +20,8 @@ func main() {
 
 	// BUG: panics if no database connection
 	CreateAdmin()
+
+	// TODO: initial config mode if db empty
 
 	gin.SetMode(gin.ReleaseMode)
 
@@ -36,7 +34,7 @@ func main() {
 	// session management
 	secret := "wowzaverysecretivelucraciobuddy"
 	store := sessions.NewCookieStore([]byte(secret))
-	pub.Use(sessions.Sessions(cfg.Site.Title, store))
+	pub.Use(sessions.Sessions("coalesce", store))
 
 	// authentication
 	pub.Use(AuthCheckpoint())
@@ -88,6 +86,7 @@ func main() {
 	// /config
 	admins.GET("/config", ConfigEdit)
 	admins.POST("/config/edit", ConfigTryEdit)
+	admins.POST("/config/reset", ConfigTryReset)
 
 	// /error
 	pub.GET("/error", ErrorHome)

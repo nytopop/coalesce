@@ -5,7 +5,9 @@ package main
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -71,7 +73,6 @@ func AuthCheckpoint() gin.HandlerFunc {
 // ensure user is auth'd at access level
 func AccessLevelAuth(level int) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// BUG: mustget borked
 		if c.MustGet("accesslevel").(int) < level {
 			c.Redirect(302, "/auth/sign-in")
 		}
@@ -81,7 +82,7 @@ func AccessLevelAuth(level int) gin.HandlerFunc {
 // GET /auth/sign-in
 func AuthSignIn(c *gin.Context) {
 	c.HTML(http.StatusOK, "auth/sign-in.html", gin.H{
-		"Site": cfg.Site,
+		"Site": GetConf(),
 		"User": GetUser(c),
 	})
 }
@@ -137,7 +138,7 @@ func AuthTrySignIn(c *gin.Context) {
 // GET /auth/register
 func AuthRegister(c *gin.Context) {
 	c.HTML(http.StatusOK, "auth/register.html", gin.H{
-		"Site": cfg.Site,
+		"Site": GetConf(),
 		"User": GetUser(c),
 	})
 }
@@ -200,8 +201,8 @@ func CreateAdmin() {
 	session := globalSession.Copy()
 	s := session.DB(dbname).C("users")
 
-	// no existing user, good 2 go
-	hash := sha512.Sum512([]byte(cfg.Server.AdminPassword))
+	pass := os.Getenv("ADMIN_PASS")
+	hash := sha512.Sum512([]byte(pass))
 	token := hex.EncodeToString(hash[:])
 
 	admin := User{
@@ -214,8 +215,7 @@ func CreateAdmin() {
 		"name": "admin",
 	}
 
-	// write db
 	if _, err := s.Upsert(&query, &admin); err != nil {
-		// handle error
+		log.Println(err)
 	}
 }
