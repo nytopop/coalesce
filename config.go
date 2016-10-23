@@ -63,17 +63,6 @@ func ConfigTryEdit(c *gin.Context) {
 	// validate
 	var confform SiteConfigForm
 	if err := c.Bind(&confform); err == nil {
-		/*		conf := SiteConfig{
-					Name:           "siteconfig",
-					Title:          confform.Title,
-					Description:    confform.Description,
-					Owner:          confform.Owner,
-					Github:         confform.Github,
-					Email:          confform.Email,
-					CorticalApiKey: confform.CorticalApiKey,
-				}
-		*/
-
 		confform.Name = "siteconfig"
 		query := bson.M{
 			"name": "siteconfig",
