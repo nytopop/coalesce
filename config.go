@@ -9,7 +9,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type SiteConfigForm struct {
+type SiteConfig struct {
 	Name           string `bson:"name" form:"name"`
 	Title          string `bson:"title" form:"title" binding:"required"`
 	Description    string `bson:"description" form:"description" binding:"required"`
@@ -19,6 +19,7 @@ type SiteConfigForm struct {
 	CorticalApiKey string `bson:"corticalapikey" form:"corticalapikey"`
 }
 
+/*
 type SiteConfig struct {
 	Id             bson.ObjectId `bson:"_id,omitempty"`
 	Name           string        `bson:"name"`
@@ -28,7 +29,7 @@ type SiteConfig struct {
 	Github         string        `bson:"github"`
 	Email          string        `bson:"email"`
 	CorticalApiKey string        `bson:"corticalapikey"`
-}
+}*/
 
 // Get active site configuration
 func GetConf() SiteConfig {
@@ -61,7 +62,7 @@ func ConfigTryEdit(c *gin.Context) {
 	s := session.DB(dbname).C("conf")
 
 	// validate
-	var confform SiteConfigForm
+	var confform SiteConfig
 	if err := c.Bind(&confform); err == nil {
 		confform.Name = "siteconfig"
 		query := bson.M{
