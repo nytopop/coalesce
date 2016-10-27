@@ -43,8 +43,8 @@ func ImgAll(c *gin.Context) {
 
 	c.HTML(http.StatusOK, "img/all.html", gin.H{
 		"Site": GetConf(),
-		"List": imgs,
 		"User": GetUser(c),
+		"Imgs": imgs,
 	})
 }
 
@@ -62,11 +62,14 @@ func ImgThumb(c *gin.Context) {
 		c.Error(err)
 		c.Redirect(302, "/error")
 	}
+	defer file.Close()
 
 	// format
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(file)
-	file.Close()
+	if _, err := buf.ReadFrom(file); err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
 
 	// send
 	c.Data(http.StatusOK, "image/jpg", buf.Bytes())
@@ -88,19 +91,37 @@ func ImgView(c *gin.Context) {
 		c.Error(err)
 		c.Redirect(302, "/error")
 	}
+	defer file.Close()
 
 	// format
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(file)
-	file.Close()
 
 	// send
 	c.Data(http.StatusOK, "image/jpg", buf.Bytes())
 }
 
-// GET /img/del
-func ImgDel(c *gin.Context) {
-	// temp
+// GET /img/del/:id
+func ImgTryDelete(c *gin.Context) {
+	session := globalSession.Copy()
+	db := session.DB(dbname)
+	imgfs := db.GridFS("images")
+	thumbfs := db.GridFS("thumbs")
+
+	hexid := c.Param("id")
+	id := bson.ObjectIdHex(hexid)
+
+	if err := imgfs.RemoveId(id); err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	if err := thumbfs.Remove(hexid); err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	c.Redirect(302, "/img")
 }
 
 // GET /img/new

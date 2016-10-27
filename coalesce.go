@@ -55,6 +55,7 @@ func main() {
 	pub.GET("/img/view/:id", ImgView)
 	editors.GET("/img/new", ImgNew)
 	editors.POST("/img/new", ImgTryNew)
+	editors.GET("/img/del/:id", ImgTryDelete)
 
 	// /posts
 	pub.GET("/posts", PostsAll)

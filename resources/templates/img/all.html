@@ -3,18 +3,17 @@
 {{ template "misc/menu.html" . }}
 <!-- Main -->
 <div id="main">
-	<div class="inner">
-		<section>
-			<div class="box alt">
-				<div class="row uniform">
+<div class="inner">
+<section>
+{{ range $k, $v := .Imgs }}
 
-					{{ range $k, $v := .List }}
-					<div class="4u"><span class="image fit"><a href="/img/view/{{ $v.Id.Hex }}"><img src="/img/thumb/{{ $v.Id.Hex }}"></a></span></div>
-					{{ end }}
-				</div>
-			</div>
-		</section>
-	</div>
+{{ $v.Filename }} -- <a href="/img/view/{{ $v.Id.Hex }}">Full</a> <a href="/img/thumb/{{ $v.Id.Hex }}">Thumb</a> <a href="/img/del/{{ $v.Id.Hex }}" onclick="return confirm('Are you sure?')">Delete</a>
+<br>
+
+{{ end }}
+
+</section>
+</div>
 </div>
 {{ template "misc/footer.html" . }}
 {{ end }}
