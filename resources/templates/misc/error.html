@@ -3,11 +3,12 @@
 {{ template "misc/menu.html" . }}
 <!-- Main -->
 <div id="main">
-	<div class="inner">
-		<header>
-			<h1>Error has been encountered. ABORT ABORT</h1>
-		</header>
-	</div>
+<div class="inner">
+{{ range $k, $v := .Errs }}
+	{{ $v }}
+	<br>
+{{ end }}
+</div>
 </div>
 {{ template "misc/footer.html" . }}
 {{ end }}

@@ -1,7 +1,5 @@
 # TODO for alpha release
 
-configuration page, /config. store site config in mongodb
-
 akismet spam detection
 
 error log in mongo
@@ -19,8 +17,6 @@ images/thumbnails pregeneration and metadata storage
 search function, mongodb full text indexes
 
 cortical.io async, generate from text only
-
-output err on /error
 
 user profiles
 

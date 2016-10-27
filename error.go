@@ -13,5 +13,6 @@ func ErrorHome(c *gin.Context) {
 	c.HTML(http.StatusOK, "misc/error.html", gin.H{
 		"Site": GetConf(),
 		"User": GetUser(c),
+		"Errs": c.Errors,
 	})
 }
