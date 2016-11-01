@@ -5,6 +5,10 @@ random cookie secret
 
 add salt for password tokens
 
+errors are handled incorrectly
+
+comment chains
+
 ## features
 search function, mongodb full text indexes
 
@@ -24,5 +28,3 @@ error log in mongo
 build docker host / swarm with ansible
 
 push docker-compose.yml to swarm, with ansible
-
-

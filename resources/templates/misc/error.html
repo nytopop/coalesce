@@ -3,12 +3,11 @@
 {{ template "misc/menu.html" . }}
 <!-- Main -->
 <div id="main">
-<div class="inner">
-{{ range $k, $v := .Errs }}
-{{ $v }}
-<br>
-{{ end }}
-</div>
+	{{ range $k, $v := .Errs }}
+	<div class="inner">
+		{{ $v }}
+	</div>
+	{{ end }}
 </div>
 {{ template "misc/footer.html" . }}
 {{ end }}

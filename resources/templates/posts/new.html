@@ -3,23 +3,21 @@
 {{ template "misc/menu.html" . }}
 <!-- Main -->
 <div id="main">
-<div class="inner">
-<header>
-<h1>New Post</h1>
+	<div class="inner">
+		<h1>New Post</h1>
+	</div>
+	<div class="inner">
+		<form method="post" action="/posts/new">
 
-<form method="post" action="/posts/new">
+			<label for="title">Title</label>
+			<input type="text" name="title" id="title" required>
 
-<label for="title">Title</label>
-<input type="text" name="title" id="title" required>
+			<label for="body">Body (markdown)</label>
+			<textarea id="body" name="body" required></textarea>
 
-<label for="body">Body (markdown)</label>
-<textarea id="body" name="body" required></textarea>
-
-<button type="submit">Submit</button>
-</form>
-
-</header>
-</div>
+			<button type="submit">Submit</button>
+		</form>
+	</div>
 </div>
 {{ template "misc/footer.html" . }}
 {{ end }}

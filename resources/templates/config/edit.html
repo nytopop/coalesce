@@ -3,38 +3,36 @@
 {{ template "misc/menu.html" . }}
 <!-- Main -->
 <div id="main">
-<div class="inner">
-<header>
-<h1>Edit Site Config</h1>
+	<div class="inner">
+		<h1>Edit Site Config</h1>
+	</div>
+	<div class="inner">
+		<form method="post" action="/config/edit">
+			<label for="title">Site Title</label>
+				<input type="text" name="title" id="title" value="{{ .Site.Title }}" required>
 
-<form method="post" action="/config/edit">
-<label for="title">Site Title</label>
-<input type="text" name="title" id="title" value="{{ .Site.Title }}" required>
+				<label for="description">Site Description</label>
+				<input type="text" name="description" id="description" value="{{ .Site.Description }}" required>
 
-<label for="description">Site Description</label>
-<input type="text" name="description" id="description" value="{{ .Site.Description }}" required>
+				<label for="owner">Site Owner</label>
+				<input type="text" name="owner" id="owner" value="{{ .Site.Owner }}" required>
 
-<label for="owner">Site Owner</label>
-<input type="text" name="owner" id="owner" value="{{ .Site.Owner }}" required>
+				<label for="github">Github Username</label>
+				<input type="text" name="github" id="github" value="{{ .Site.Github }}">
 
-<label for="github">Github Username</label>
-<input type="text" name="github" id="github" value="{{ .Site.Github }}">
+				<label for="email">Email Address</label>
+				<input type="text" name="email" id="email" value="{{ .Site.Email }}">
 
-<label for="email">Email Address</label>
-<input type="text" name="email" id="email" value="{{ .Site.Email }}">
+				<label for="corticalapikey">Cortical.io API Key</label>
+				<input type="text" name="corticalapikey" id="corticalapikey" value="{{ .Site.CorticalApiKey }}">
 
-<label for="corticalapikey">Cortical.io API Key</label>
-<input type="text" name="corticalapikey" id="corticalapikey" value="{{ .Site.CorticalApiKey }}">
+				<button type="submit">Submit</button>
+		</form>
 
-<button type="submit">Submit</button>
-</form>
-
-<form method="post" action="/config/reset" onclick="return confirm('Are you sure?')">
-<button type="submit">Reset Config</button>
-</form>
-
-</header>
-</div>
+		<form method="post" action="/config/reset" onclick="return confirm('Are you sure?')">
+			<button type="submit">Reset Config</button>
+		</form>
+	</div>
 </div>
 {{ template "misc/footer.html" . }}
 {{ end }}

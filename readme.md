@@ -1,6 +1,6 @@
 # coalesce [![Build Status](https://travis-ci.org/nytopop/coalesce.svg?branch=master)](https://travis-ci.org/nytopop/coalesce)
 
-A lightning fast multi-user blogging platform in Go.
+A lightning fast multi-user blogging platform in Go. Currently in pre-alpha phase.
 
 ## Installation
 

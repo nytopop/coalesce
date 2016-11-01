@@ -4,14 +4,11 @@
 <!-- Main -->
 <div id="main">
 	<div class="inner">
-		<header>
-			<strong>{{ .Post.Timestamp }} by {{ .Post.Author }}</strong>
-			<h1>{{ .Post.Title }}</h1>
-			<p>{{ .Post.BodyHTML }}</p>
-		</header>
+		<strong>{{ .Post.Timestamp }} by {{ .Post.Author }}</strong>
+		<h1>{{ .Post.Title }}</h1>
+		<p>{{ .Post.BodyHTML }}</p>
 		<p>
-		<strong>Tags:</strong> {{ range $k, $v := .Post.Tags }}{{ $v }}, {{ end }}
-		</p>
+		<p><strong>Tags:</strong> {{ range $k, $v := .Post.Tags }}{{ $v }}, {{ end }}</p>
 	</div>
 	<hr>
 		{{ template "posts/comments.html" . }}
