@@ -2,18 +2,12 @@
 
 package main
 
-import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-)
+import "github.com/gin-gonic/gin"
 
 // GET /error
 func ErrorHome(c *gin.Context) {
-	c.HTML(http.StatusOK, "misc/error.html", gin.H{
-		"Site": GetConf(),
+	c.HTML(200, "misc/error.html", gin.H{
 		"User": GetUser(c),
-		"Errs": c.Errors.Errors(),
 	})
 }
 
