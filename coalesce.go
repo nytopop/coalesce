@@ -62,7 +62,7 @@ func main() {
 
 	// routes
 	pub.Static("/static", "resources/static")
-	pub.GET("/", PagesHome)
+	pub.GET("/", Home)
 
 	// /img
 	editors.GET("/img", ImgAll)

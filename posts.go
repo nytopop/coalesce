@@ -77,6 +77,11 @@ func (p Post) CommentTree() []Comment {
 }
 */
 
+// GET /
+func Home(c *gin.Context) {
+	c.Redirect(302, "/posts")
+}
+
 // GET /posts[?p=[0,1,2,...]]
 func PostsPage(c *gin.Context) {
 	// Get page number from arg
