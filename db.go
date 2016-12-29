@@ -3,9 +3,7 @@
 package main
 
 import (
-	"crypto/sha512"
 	"database/sql"
-	"encoding/hex"
 	"io/ioutil"
 	"os"
 
@@ -29,17 +27,18 @@ func initDB() error {
 		pass = "password"
 	}
 
-	hash := sha512.Sum512([]byte(pass))
-	token := hex.EncodeToString(hash[:])
+	salt, err := GenerateSalt()
+	if err != nil {
+		return err
+	}
+
+	token := ComputeToken(salt, pass)
 	adm := SQLUser{
 		Name:        "admin",
+		Salt:        salt,
 		Token:       token,
 		AccessLevel: 3,
 	}
-
-	// check if an 'admin' user exists
-	// if it does, update it to the right password
-	// if not, write a new user
 
 	admInDB, err := queryUserExists(adm.Name)
 	if err != nil {
@@ -185,6 +184,7 @@ func queryUsersAll() ([]SQLUser, error) {
 		err = rows.Scan(
 			&u.Userid,
 			&u.Name,
+			&u.Salt,
 			&u.Token,
 			&u.AccessLevel,
 		)
@@ -210,6 +210,7 @@ func queryUser(name, token string) (SQLUser, error) {
 		err = row.Scan(
 			&u.Userid,
 			&u.Name,
+			&u.Salt,
 			&u.Token,
 			&u.AccessLevel,
 		)
@@ -222,7 +223,7 @@ func queryUser(name, token string) (SQLUser, error) {
 }
 
 func queryUserExists(name string) (bool, error) {
-	s := `SELECT * FROM users WHERE username = ?`
+	s := `SELECT * FROM users WHERE username=?`
 
 	row, err := sqdb.Query(s, name)
 	if err != nil {
@@ -234,6 +235,7 @@ func queryUserExists(name string) (bool, error) {
 		err = row.Scan(
 			&u.Userid,
 			&u.Name,
+			&u.Salt,
 			&u.Token,
 			&u.AccessLevel,
 		)
@@ -249,6 +251,30 @@ func queryUserExists(name string) (bool, error) {
 	}
 }
 
+func queryUsername(name string) (SQLUser, error) {
+	s := `SELECT * FROM users WHERE username=?`
+
+	row, err := sqdb.Query(s, name)
+	if err != nil {
+		return SQLUser{}, err
+	}
+
+	u := SQLUser{}
+	for row.Next() {
+		err = row.Scan(
+			&u.Userid,
+			&u.Name,
+			&u.Salt,
+			&u.Token,
+			&u.AccessLevel)
+		if err != nil {
+			return SQLUser{}, err
+		}
+	}
+
+	return u, nil
+}
+
 func queryUserID(user int) (SQLUser, error) {
 	s := `SELECT * FROM users WHERE userid=?`
 
@@ -262,6 +288,7 @@ func queryUserID(user int) (SQLUser, error) {
 		err = row.Scan(
 			&u.Userid,
 			&u.Name,
+			&u.Salt,
 			&u.Token,
 			&u.AccessLevel,
 		)
@@ -274,14 +301,14 @@ func queryUserID(user int) (SQLUser, error) {
 }
 
 func writeUser(user SQLUser) error {
-	s := `INSERT INTO users (userid, username, token, privlevel) VALUES (?, ?, ?, ?)`
-	_, err := sqdb.Exec(s, nil, user.Name, user.Token, user.AccessLevel)
+	s := `INSERT INTO users (userid, username, salt, token, privlevel) VALUES (?, ?, ?, ?, ?)`
+	_, err := sqdb.Exec(s, nil, user.Name, user.Salt, user.Token, user.AccessLevel)
 	return err
 }
 
 func updateUser(user SQLUser) error {
-	s := `UPDATE users SET username=?,token=?,privlevel=? WHERE userid=?`
-	_, err := sqdb.Exec(s, user.Name, user.Token, user.AccessLevel, user.Userid)
+	s := `UPDATE users SET username=?,salt=?,token=?,privlevel=? WHERE userid=?`
+	_, err := sqdb.Exec(s, user.Name, user.Salt, user.Token, user.AccessLevel, user.Userid)
 	return err
 }
 

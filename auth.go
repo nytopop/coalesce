@@ -3,14 +3,13 @@
 package main
 
 import (
+	"crypto/rand"
 	"crypto/sha512"
 	"encoding/hex"
 	"net/http"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
-
-	"gopkg.in/mgo.v2/bson"
 )
 
 type SignInForm struct {
@@ -23,22 +22,29 @@ type RegisterForm struct {
 	Password string `form:"password" binding:"required"`
 }
 
-type User struct {
-	Id          bson.ObjectId `bson:"_id,omitempty"`
-	Name        string        `bson:"name"`
-	Token       string        `bson:"token"`
-	AccessLevel int           `bson:"accesslevel"`
-}
-
 type SQLUser struct {
 	Userid      int
 	Name        string
+	Salt        string
 	Token       string
 	AccessLevel int
 }
 
-func GenerateSalt() string {
-	return ""
+func GenerateSalt() (string, error) {
+	r := make([]byte, 32)
+	_, err := rand.Read(r)
+	if err != nil {
+		return "", err
+	}
+
+	hash := sha512.Sum512(r)
+	return hex.EncodeToString(hash[:]), nil
+}
+
+func ComputeToken(salt, pw string) string {
+	chars := salt + pw
+	hash := sha512.Sum512([]byte(chars))
+	return hex.EncodeToString(hash[:])
 }
 
 // Get active user
@@ -111,30 +117,30 @@ func AuthTrySignIn(c *gin.Context) {
 	var authform SignInForm
 	err := c.Bind(&authform)
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
 	}
 
-	/*
-		Check if user exists, if not DENY
-		Get user's salt, hash password with salt
-		If not matched, DENY
-	*/
-
-	// create token; hash password
-	hash := sha512.Sum512([]byte(authform.Password))
-	token := hex.EncodeToString(hash[:])
-	user, err := queryUser(authform.Username, token)
+	exists, err := queryUserExists(authform.Username)
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
 	}
 
-	// set cookies
-	switch user {
-	case SQLUser{}: // no match
+	if !exists {
 		c.Redirect(302, "/auth/sign-in")
-	default: // user matched
+	}
+
+	user, err := queryUsername(authform.Username)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	token := ComputeToken(user.Salt, authform.Password)
+	if token != user.Token {
+		c.Redirect(302, "/auth/sign-in")
+	} else {
 		cookies.Set("userid", user.Userid)
 		cookies.Set("name", user.Name)
 		cookies.Set("accesslevel", user.AccessLevel)
@@ -142,7 +148,6 @@ func AuthTrySignIn(c *gin.Context) {
 
 		c.Redirect(302, "/posts")
 	}
-
 }
 
 // GET /auth/register
@@ -159,35 +164,40 @@ func AuthTryRegister(c *gin.Context) {
 	var authform RegisterForm
 	err := c.Bind(&authform)
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
 	}
 
 	// check if user exists
 	userExists, err := queryUserExists(authform.Username)
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
 	}
 
 	switch userExists {
 	case true:
 		c.Redirect(302, "/auth/register")
 	case false:
-		hash := sha512.Sum512([]byte(authform.Password))
-		token := hex.EncodeToString(hash[:])
+		salt, err := GenerateSalt()
+		if err != nil {
+			RenderErr(c, err)
+			return
+		}
+		token := ComputeToken(salt, authform.Password)
 
 		// create the user from form
 		user := SQLUser{
 			Name:        authform.Username,
+			Salt:        salt,
 			Token:       token,
-			AccessLevel: 2,
+			AccessLevel: 1,
 		}
 
 		err = writeUser(user)
 		if err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
+			RenderErr(c, err)
+			return
 		}
 
 		c.Redirect(302, "/posts")

@@ -10,8 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
-
-	"gopkg.in/mgo.v2/bson"
 )
 
 type PostForm struct {
@@ -25,6 +23,7 @@ type PostEditForm struct {
 	Body   string `form:"body" binding:"required"`
 }
 
+/*
 type Post struct {
 	Id        bson.ObjectId `bson:"_id,omitempty"`
 	Title     string        `bson:"title"`
@@ -37,6 +36,7 @@ type Post struct {
 	BodyHTML  template.HTML `bson:"bodyhtml"`
 	Tags      []string      `bson:"tags"`
 }
+*/
 
 type SQLPost struct {
 	Postid     int
@@ -50,21 +50,22 @@ type SQLPost struct {
 	Updated    int64
 }
 
+/*
 // get entire comment hierarchy of post
 func (p Post) CommentTree() []Comment {
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("comments")*/
+	session := globalSession.Copy()
+	s := session.DB(dbname).C("comments")
 
 	// get all root level comments
 	//id := p.Id
 	comments := []*Comment{}
-	/*query := bson.M{
+	query := bson.M{
 		"postid": id,
 		"depth":  0,
 	}
 	if err := s.Find(query).Sort("-timestamp").Iter().All(&comments); err != nil {
 		log.Println(err)
-	}*/
+	}
 
 	// construct tree from root comments
 	tree := []Comment{}
@@ -74,6 +75,7 @@ func (p Post) CommentTree() []Comment {
 
 	return tree
 }
+*/
 
 // GET /posts[?p=[0,1,2,...]]
 func PostsPage(c *gin.Context) {
