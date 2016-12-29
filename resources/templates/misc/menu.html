@@ -1,9 +1,6 @@
 {{ define "misc/menu.html" }}
 <ul>
   <li><a href="/posts">Posts</a></li>
-  {{ if eq .User.AccessLevel 3 }}
-  <li><a href="/users/all">Users</a></li>
-  {{ end }}
   {{ if eq .User.AccessLevel 2 }}
   <li><a href="/posts/new">Write</a></li>
   {{ end }}
@@ -13,7 +10,7 @@
   {{ end }}
   {{ if gt .User.AccessLevel 0 }}
   <li><a href="/auth/sign-out">Sign Out</a></li>
-  <li><a href="/posts/me">{{ .User.Name }}</a></li>
+  <li><a href="/users/me">{{ .User.Name }}</a></li>
   {{ end }}
 </ul>
 {{ end }}

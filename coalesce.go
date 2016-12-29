@@ -75,11 +75,10 @@ func main() {
 	// /posts
 	pub.GET("/posts", PostsPage)
 	pub.GET("/posts/view/:id", PostsView)
-	commentors.GET("/posts/me", PostsMe)
 	editors.GET("/posts/new", PostsNew)
 	editors.POST("/posts/new", PostsTryNew)
 	editors.GET("/posts/edit/:id", PostsEdit)
-	editors.POST("/posts/edit", PostsTryEdit)
+	editors.POST("/posts/edit/:id", PostsTryEdit)
 	editors.GET("/posts/del/:id", PostsTryDelete)
 
 	// /comments
@@ -94,10 +93,13 @@ func main() {
 	pub.POST("/auth/register", AuthTryRegister)
 
 	// /users
+	commentors.GET("/users/me", UsersMe)
+	commentors.GET("/users/myposts", UsersMyPosts)
+	commentors.GET("/users/mycomments", UsersMyComments)
 	admins.GET("/users/all", UsersAll)
-	admins.GET("/users/promote/:name", UsersTryPromote)
-	admins.GET("/users/demote/:name", UsersTryDemote)
-	admins.GET("/users/del/:name", UsersTryDelete)
+	admins.GET("/users/promote/:id", UsersTryPromote)
+	admins.GET("/users/demote/:id", UsersTryDemote)
+	admins.GET("/users/del/:id", UsersTryDelete)
 
 	// /config
 	admins.GET("/config", ConfigEdit)

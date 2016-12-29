@@ -3,6 +3,7 @@
 package main
 
 import (
+	"errors"
 	"html/template"
 	"strconv"
 	"time"
@@ -83,8 +84,8 @@ func PostsPage(c *gin.Context) {
 		var err error
 		pNum, err = strconv.Atoi(p)
 		if err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
+			RenderErr(c, err)
+			return
 		}
 	} else {
 		pNum = 0
@@ -93,8 +94,8 @@ func PostsPage(c *gin.Context) {
 	// get posts
 	posts, err := queryPostsPage(pNum)
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
 	}
 
 	// render
@@ -104,47 +105,24 @@ func PostsPage(c *gin.Context) {
 	})
 }
 
-// GET /posts/me
-func PostsMe(c *gin.Context) {
-	/*
-		session := globalSession.Copy()
-		s := session.DB(dbname).C("posts")
-
-		user := GetUser(c)
-
-		// query for user
-		query := bson.M{
-			"author": user.Name,
-		}
-
-		// get posts
-		posts := []*Post{}
-		if err := s.Find(query).Sort("-timestamp").Iter().All(&posts); err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
-		}
-
-		c.HTML(http.StatusOK, "posts/me.html", gin.H{
-			"Site":  GetConf(),
-			"Posts": posts,
-			"User":  user,
-		})
-	*/
-}
-
 // GET /posts/view/:id
 func PostsView(c *gin.Context) {
 	p := c.Param("id")
 	pNum, err := strconv.Atoi(p)
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
 	}
 
 	post, err := queryPost(pNum)
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
+	}
+
+	if post == (SQLPost{}) {
+		RenderErr(c, errors.New("Post not found"))
+		return
 	}
 
 	// comments!
@@ -153,29 +131,6 @@ func PostsView(c *gin.Context) {
 		"Post": post,
 		"User": GetUser(c),
 	})
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("posts")
-
-	// get obj id from hex
-	hexid := c.Param("id")
-	id := bson.ObjectIdHex(hexid)
-
-	// get post
-	post := Post{}
-	if err := s.FindId(id).One(&post); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
-	}
-
-	// get comments
-	tree := post.CommentTree()
-
-	c.HTML(http.StatusOK, "posts/view.html", gin.H{
-		"Site":     GetConf(),
-		"Post":     post,
-		"Comments": tree,
-		"User":     GetUser(c),
-	})*/
 }
 
 // GET /posts/new
@@ -191,20 +146,15 @@ func PostsTryNew(c *gin.Context) {
 	var postform PostForm
 	err := c.Bind(&postform)
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
 	}
 
 	user := GetUser(c)
-	id, err := queryUserID(user.Name)
-	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
-	}
 
 	html := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
 	post := SQLPost{
-		Userid:     id,
+		Userid:     user.Userid,
 		Title:      postform.Title,
 		Body:       postform.Body,
 		BodyHTML:   html,
@@ -215,174 +165,111 @@ func PostsTryNew(c *gin.Context) {
 
 	err = writePost(post)
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
 	}
 
 	c.Redirect(302, "/posts")
-
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("posts")
-
-	conf := GetConf()
-	user := GetUser(c)
-
-	// validate form
-	var postform PostForm
-	if err := c.Bind(&postform); err == nil {
-		// convert markdown
-		body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
-
-		// create tags using cortical.io
-		tags, err := GetKeywordsForText(conf.CorticalApiKey, postform.Body)
-		if err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
-		}
-
-		// construct post
-		post := Post{
-			Title:     postform.Title,
-			Author:    user.Name,
-			Body:      postform.Body,
-			BodyHTML:  template.HTML(body),
-			Timestamp: time.Now(),
-			Updated:   time.Now(),
-			Tags:      tags,
-		}
-
-		if err := s.Insert(&post); err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
-		}
-
-		posturl := "/posts"
-		c.Redirect(302, posturl)
-	} else {
-		c.Error(err)
-		c.Redirect(302, "/error")
-	}*/
 }
 
 // GET /posts/edit/:id
 func PostsEdit(c *gin.Context) {
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("posts")
+	p := c.Param("id")
+	pNum, err := strconv.Atoi(p)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
 
-	// get obj id from hex
-	hexid := c.Param("id")
-	id := bson.ObjectIdHex(hexid)
-
-	// get post
-	post := Post{}
-	if err := s.FindId(id).One(&post); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+	post, err := queryPost(pNum)
+	if err != nil {
+		RenderErr(c, err)
+		return
 	}
 
 	user := GetUser(c)
 
-	if user.Name == post.Author || user.Name == "admin" {
-		c.HTML(http.StatusOK, "posts/edit.html", gin.H{
-			"Site": GetConf(),
+	if user.Userid == post.Userid {
+		c.HTML(200, "posts/edit.html", gin.H{
 			"Post": post,
 			"User": user,
 		})
 	} else {
 		c.Redirect(302, "/auth/sign-in")
-	}*/
-
+	}
 }
 
-// POST /posts/edit
+// POST /posts/edit/:id
 func PostsTryEdit(c *gin.Context) {
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("posts")
+	p := c.Param("id")
+	pNum, err := strconv.Atoi(p)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
 
-	conf := GetConf()
 	user := GetUser(c)
+	oldPost, err := queryPost(pNum)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
 
-	// validate form
-	var postform PostEditForm
-	if err := c.Bind(&postform); err == nil {
-
-		// get obj id from hex
-		hexid := postform.PostId
-		id := bson.ObjectIdHex(hexid)
-
-		// get timestamp from orig post
-		oldpost := Post{}
-		if err := s.FindId(id).One(&oldpost); err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
-		}
-
-		if user.Name == oldpost.Author || user.Name == "admin" {
-			// convert markdown
-			body := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
-
-			// create tags using cortical.io
-			tags, err := GetKeywordsForText(conf.CorticalApiKey, postform.Body)
-			if err != nil {
-				c.Error(err)
-				c.Redirect(302, "/error")
-			}
-
-			// construct updated post
-			post := Post{
-				Title:     postform.Title,
-				Author:    user.Name,
-				Body:      postform.Body,
-				BodyHTML:  template.HTML(body),
-				Timestamp: oldpost.Timestamp,
-				Updated:   time.Now(),
-				Tags:      tags,
-			}
-
-			// update post
-			if err := s.UpdateId(id, post); err != nil {
-				c.Error(err)
-				c.Redirect(302, "/error")
-			}
-
-			posturl := "/posts/view/" + hexid
-			c.Redirect(302, posturl)
-		} else {
-			c.Redirect(302, "/auth/sign-in")
-		}
+	if user.Userid != oldPost.Userid {
+		c.Redirect(302, "/auth/sign-in")
 	} else {
-		c.Error(err)
-		c.Redirect(302, "/error")
-	}*/
+		var postform PostForm
+		err = c.Bind(&postform)
+		if err != nil {
+			RenderErr(c, err)
+			return
+		}
+
+		html := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
+		newPost := SQLPost{
+			Postid:   pNum,
+			Title:    postform.Title,
+			Body:     postform.Body,
+			BodyHTML: html,
+			Updated:  time.Now().Unix(),
+		}
+
+		err = updatePost(newPost)
+		if err != nil {
+			RenderErr(c, err)
+			return
+		}
+
+		c.Redirect(302, "/posts")
+	}
 }
 
 // GET /posts/del/:id
 func PostsTryDelete(c *gin.Context) {
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("posts")
+	p := c.Param("id")
+	pNum, err := strconv.Atoi(p)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	post, err := queryPost(pNum)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
 
 	user := GetUser(c)
 
-	// get obj id from hex
-	hexid := c.Param("id")
-	id := bson.ObjectIdHex(hexid)
-
-	// get post
-	post := Post{}
-	if err := s.FindId(id).One(&post); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
-	}
-
-	if user.Name == post.Author || user.Name == "admin" {
-		// delete post
-		if err := s.RemoveId(id); err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
+	if user.Userid != post.Userid {
+		c.Redirect(302, "/auth/sign-in")
+	} else {
+		err = deletePost(pNum)
+		if err != nil {
+			RenderErr(c, err)
+			return
 		}
 
-		c.Redirect(302, "/posts/me")
-	} else {
-		c.Redirect(302, "/auth/sign-in")
-	}*/
+		c.Redirect(302, "/posts")
+	}
 }

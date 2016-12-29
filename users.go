@@ -2,112 +2,119 @@
 
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+)
 
 // GET /users/all
 func UsersAll(c *gin.Context) {
 	users, err := queryUsersAll()
 	if err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+		RenderErr(c, err)
+		return
 	}
 
 	c.HTML(200, "users/all.html", gin.H{
 		"Users": users,
 		"User":  GetUser(c),
 	})
-
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("users")
-
-	// query for all users
-	users := []*User{}
-	if err := s.Find(nil).Sort("name").Iter().All(&users); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
-	}
-
-	c.HTML(http.StatusOK, "users/all.html", gin.H{
-		"Site":  GetConf(),
-		"Users": users,
-		"User":  GetUser(c),
-	})*/
 }
 
-// GET /users/promote/:name
+// GET /users/promote/:id
 func UsersTryPromote(c *gin.Context) {
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("users")
-
-	// query for user
-	name := c.Param("name")
-	query := bson.M{
-		"name": name,
+	p := c.Param("id")
+	pNum, err := strconv.Atoi(p)
+	if err != nil {
+		RenderErr(c, err)
+		return
 	}
 
-	// get user
-	user := User{}
-	if err := s.Find(query).One(&user); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+	user, err := queryUserID(pNum)
+	if err != nil {
+		RenderErr(c, err)
+		return
 	}
 
-	// update user
 	user.AccessLevel = 2
-	if err := s.Update(query, user); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+	err = updateUser(user)
+	if err != nil {
+		RenderErr(c, err)
+		return
 	}
 
-	c.Redirect(302, "/users/all")*/
+	c.Redirect(302, "/users/all")
 }
 
-// GET /users/demote/:name
+// GET /users/demote/:id
 func UsersTryDemote(c *gin.Context) {
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("users")
-
-	// query for user
-	name := c.Param("name")
-	query := bson.M{
-		"name": name,
+	p := c.Param("id")
+	pNum, err := strconv.Atoi(p)
+	if err != nil {
+		RenderErr(c, err)
+		return
 	}
 
-	// get user
-	user := User{}
-	if err := s.Find(query).One(&user); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+	user, err := queryUserID(pNum)
+	if err != nil {
+		RenderErr(c, err)
+		return
 	}
 
-	// update user
 	user.AccessLevel = 1
-	if err := s.Update(query, user); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
+	err = updateUser(user)
+	if err != nil {
+		RenderErr(c, err)
+		return
 	}
 
-	c.Redirect(302, "/users/all")*/
+	c.Redirect(302, "/users/all")
 }
 
-// GET /users/del/:name
+// GET /users/del/:id
 func UsersTryDelete(c *gin.Context) {
-	/*session := globalSession.Copy()
-	s := session.DB(dbname).C("users")
-
-	name := c.Param("name")
-	if name != "admin" {
-		// query
-		query := bson.M{
-			"name": name,
-		}
-
-		// delete user
-		if err := s.Remove(query); err != nil {
-			c.Error(err)
-			c.Redirect(302, "/error")
-		}
+	p := c.Param("id")
+	pNum, err := strconv.Atoi(p)
+	if err != nil {
+		RenderErr(c, err)
+		return
 	}
 
-	c.Redirect(302, "/users/all")*/
+	err = deleteUser(pNum)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	c.Redirect(302, "/users/all")
+}
+
+// GET /users/me
+func UsersMe(c *gin.Context) {
+	c.HTML(200, "users/me.html", gin.H{
+		"User": GetUser(c),
+	})
+}
+
+// GET /users/myposts
+func UsersMyPosts(c *gin.Context) {
+	user := GetUser(c)
+	posts, err := queryPostsUserID(user.Userid)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	c.HTML(200, "users/myposts.html", gin.H{
+		"Posts": posts,
+		"User":  user,
+	})
+}
+
+// GET /users/mycomments
+func UsersMyComments(c *gin.Context) {
+	c.HTML(200, "users/mycomments.html", gin.H{
+		"User": GetUser(c),
+	})
 }

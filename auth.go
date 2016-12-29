@@ -37,20 +37,28 @@ type SQLUser struct {
 	AccessLevel int
 }
 
+func GenerateSalt() string {
+	return ""
+}
+
 // Get active user
 func GetUser(c *gin.Context) SQLUser {
+	var userid int
 	var name string
 	var alevel int
 
+	if x := c.MustGet("userid"); x != nil {
+		userid = x.(int)
+	}
+	if x := c.MustGet("name"); x != nil {
+		name = x.(string)
+	}
 	if x := c.MustGet("accesslevel"); x != nil {
 		alevel = x.(int)
 	}
 
-	if x := c.MustGet("name"); x != nil {
-		name = x.(string)
-	}
-
 	user := SQLUser{
+		Userid:      userid,
 		Name:        name,
 		AccessLevel: alevel,
 	}
@@ -66,9 +74,11 @@ func AuthCheckpoint() gin.HandlerFunc {
 
 		// check if sign in cookie exists
 		if cookies.Get("name") != nil {
+			c.Set("userid", cookies.Get("userid"))
 			c.Set("name", cookies.Get("name"))
 			c.Set("accesslevel", cookies.Get("accesslevel"))
 		} else {
+			c.Set("userid", -1)
 			c.Set("name", "guest")
 			c.Set("accesslevel", 0)
 		}
@@ -105,6 +115,12 @@ func AuthTrySignIn(c *gin.Context) {
 		c.Redirect(302, "/error")
 	}
 
+	/*
+		Check if user exists, if not DENY
+		Get user's salt, hash password with salt
+		If not matched, DENY
+	*/
+
 	// create token; hash password
 	hash := sha512.Sum512([]byte(authform.Password))
 	token := hex.EncodeToString(hash[:])
@@ -119,6 +135,7 @@ func AuthTrySignIn(c *gin.Context) {
 	case SQLUser{}: // no match
 		c.Redirect(302, "/auth/sign-in")
 	default: // user matched
+		cookies.Set("userid", user.Userid)
 		cookies.Set("name", user.Name)
 		cookies.Set("accesslevel", user.AccessLevel)
 		cookies.Save()

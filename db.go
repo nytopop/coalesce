@@ -58,7 +58,6 @@ func initDB() error {
 
 func queryPostsPage(page int) ([]SQLPost, error) {
 	s := `SELECT * FROM posts WHERE postid > ? ORDER BY postid DESC LIMIT 5`
-	//s := `SELECT * FROM posts`
 
 	rows, err := sqdb.Query(s, page*5)
 	if err != nil {
@@ -89,8 +88,32 @@ func queryPostsPage(page int) ([]SQLPost, error) {
 	return posts, nil
 }
 
-func queryPostsUser(user string) ([]SQLPost, error) {
-	return []SQLPost{}, nil
+func queryPostsUserID(user int) ([]SQLPost, error) {
+	s := `SELECT * FROM posts WHERE userid=? ORDER BY postid DESC`
+
+	rows, err := sqdb.Query(s, user)
+	if err != nil {
+		return []SQLPost{}, err
+	}
+
+	posts := []SQLPost{}
+	for rows.Next() {
+		p := SQLPost{}
+		err = rows.Scan(
+			&p.Postid,
+			&p.Userid,
+			&p.Title,
+			&p.Body,
+			&p.BodyHTML,
+			&p.Posted,
+			&p.Updated)
+		if err != nil {
+			return []SQLPost{}, err
+		}
+		posts = append(posts, p)
+	}
+
+	return posts, nil
 }
 
 func queryPost(post int) (SQLPost, error) {
@@ -131,9 +154,20 @@ func writePost(p SQLPost) error {
 		p.BodyHTML,
 		// p.Categoryid,
 		p.Posted,
-		p.Updated,
-	)
+		p.Updated)
 
+	return err
+}
+
+func updatePost(p SQLPost) error {
+	s := `UPDATE posts SET title=?,body=?,bodyHTML=?,updated=? WHERE postid=?`
+	_, err := sqdb.Exec(s, p.Title, p.Body, p.BodyHTML, p.Updated, p.Postid)
+	return err
+}
+
+func deletePost(post int) error {
+	s := `DELETE FROM posts WHERE postid=?`
+	_, err := sqdb.Exec(s, post)
 	return err
 }
 
@@ -215,23 +249,28 @@ func queryUserExists(name string) (bool, error) {
 	}
 }
 
-func queryUserID(name string) (int, error) {
-	s := `SELECT userid FROM users WHERE username = ?`
+func queryUserID(user int) (SQLUser, error) {
+	s := `SELECT * FROM users WHERE userid=?`
 
-	row, err := sqdb.Query(s, name)
+	row, err := sqdb.Query(s, user)
 	if err != nil {
-		return 0, err
+		return SQLUser{}, err
 	}
 
-	var id int
+	u := SQLUser{}
 	for row.Next() {
-		err = row.Scan(&id)
+		err = row.Scan(
+			&u.Userid,
+			&u.Name,
+			&u.Token,
+			&u.AccessLevel,
+		)
 		if err != nil {
-			return 0, err
+			return SQLUser{}, err
 		}
 	}
 
-	return id, nil
+	return u, nil
 }
 
 func writeUser(user SQLUser) error {
@@ -241,7 +280,13 @@ func writeUser(user SQLUser) error {
 }
 
 func updateUser(user SQLUser) error {
-	s := `UPDATE users SET username=?,token=?,privlevel=? WHERE username=?`
-	_, err := sqdb.Exec(s, user.Name, user.Token, user.AccessLevel, user.Name)
+	s := `UPDATE users SET username=?,token=?,privlevel=? WHERE userid=?`
+	_, err := sqdb.Exec(s, user.Name, user.Token, user.AccessLevel, user.Userid)
+	return err
+}
+
+func deleteUser(user int) error {
+	s := `DELETE FROM users WHERE userid=?`
+	_, err := sqdb.Exec(s, user)
 	return err
 }

@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS users (
                       UNIQUE,
     username  TEXT    UNIQUE
                       NOT NULL,
+--    salt      TEXT    NOT NULL,
     token     TEXT    NOT NULL,
     privlevel INTEGER NOT NULL
 );
