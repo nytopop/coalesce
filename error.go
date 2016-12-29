@@ -11,7 +11,6 @@ import (
 
 // GET /error
 func ErrorHome(c *gin.Context) {
-
 	log.Println(c.Errors.Errors())
 
 	c.HTML(http.StatusOK, "misc/error.html", gin.H{

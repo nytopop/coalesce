@@ -3,7 +3,6 @@
 package main
 
 import (
-	"log"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -40,14 +39,14 @@ func (c Comment) Indent() int {
 // recursive comment chain flattener, single tree
 func (c Comment) Tree() []Comment {
 	// load db session
-	session := globalSession.Copy()
-	s := session.DB(dbname).C("comments")
+	/*session := globalSession.Copy()
+	s := session.DB(dbname).C("comments")*/
 
 	// add self to result set
 	tree := []Comment{}
 	tree = append(tree, c)
 
-	if len(c.Replies) > 0 {
+	/*if len(c.Replies) > 0 {
 		// if there is a deeper level, keep going
 		for _, v := range c.Replies {
 			// go deeper
@@ -62,17 +61,17 @@ func (c Comment) Tree() []Comment {
 			// recurse!
 			tree = append(tree, next.Tree()...)
 		}
-	}
+	}*/
 	return tree
 }
 
 // POST /comments/new
 func CommentsTryNew(c *gin.Context) {
-	session := globalSession.Copy()
-	s := session.DB(dbname).C("comments")
+	/*session := globalSession.Copy()
+	s := session.DB(dbname).C("comments")*/
 
 	// validate
-	var cform CommentForm
+	/*var cform CommentForm
 	if err := c.Bind(&cform); err == nil {
 		// get obj id from hex
 		hexid := cform.PostId
@@ -96,17 +95,17 @@ func CommentsTryNew(c *gin.Context) {
 	} else {
 		c.Error(err)
 		c.Redirect(302, "/error")
-	}
+	}*/
 }
 
 // TODO non-working for now, don't touch
 // POST /comments/reply
 func CommentsTryReply(c *gin.Context) {
-	session := globalSession.Copy()
-	s := session.DB(dbname).C("comments")
+	/*session := globalSession.Copy()
+	s := session.DB(dbname).C("comments")*/
 
 	// validate
-	var rform CommentReplyForm
+	/*var rform CommentReplyForm
 	if err := c.Bind(&rform); err == nil {
 		// get parent id
 		parhexid := rform.CommentId
@@ -141,5 +140,5 @@ func CommentsTryReply(c *gin.Context) {
 		if err := s.UpdateId(parid, parent); err != nil {
 			// err
 		}
-	}
+	}*/
 }

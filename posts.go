@@ -4,8 +4,7 @@ package main
 
 import (
 	"html/template"
-	"log"
-	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -38,21 +37,33 @@ type Post struct {
 	Tags      []string      `bson:"tags"`
 }
 
+type SQLPost struct {
+	Postid     int
+	Userid     int
+	Title      string
+	Body       string
+	BodyHTML   string
+	RenderHTML template.HTML
+	Categoryid int
+	Posted     int64
+	Updated    int64
+}
+
 // get entire comment hierarchy of post
 func (p Post) CommentTree() []Comment {
-	session := globalSession.Copy()
-	s := session.DB(dbname).C("comments")
+	/*session := globalSession.Copy()
+	s := session.DB(dbname).C("comments")*/
 
 	// get all root level comments
-	id := p.Id
+	//id := p.Id
 	comments := []*Comment{}
-	query := bson.M{
+	/*query := bson.M{
 		"postid": id,
 		"depth":  0,
 	}
 	if err := s.Find(query).Sort("-timestamp").Iter().All(&comments); err != nil {
 		log.Println(err)
-	}
+	}*/
 
 	// construct tree from root comments
 	tree := []Comment{}
@@ -63,20 +74,31 @@ func (p Post) CommentTree() []Comment {
 	return tree
 }
 
-// GET /posts
-func PostsAll(c *gin.Context) {
-	session := globalSession.Copy()
-	s := session.DB(dbname).C("posts")
+// GET /posts[?p=[0,1,2,...]]
+func PostsPage(c *gin.Context) {
+	// Get page number from arg
+	p := c.Query("p")
+	var pNum int
+	if p != "" {
+		var err error
+		pNum, err = strconv.Atoi(p)
+		if err != nil {
+			c.Error(err)
+			c.Redirect(302, "/error")
+		}
+	} else {
+		pNum = 0
+	}
 
 	// get posts
-	posts := []*Post{}
-	if err := s.Find(nil).Sort("-timestamp").Iter().All(&posts); err != nil {
+	posts, err := queryPostsPage(pNum)
+	if err != nil {
 		c.Error(err)
 		c.Redirect(302, "/error")
 	}
 
-	c.HTML(http.StatusOK, "posts/all.html", gin.H{
-		"Site":  GetConf(),
+	// render
+	c.HTML(200, "posts/page.html", gin.H{
 		"Posts": posts,
 		"User":  GetUser(c),
 	})
@@ -84,33 +106,54 @@ func PostsAll(c *gin.Context) {
 
 // GET /posts/me
 func PostsMe(c *gin.Context) {
-	session := globalSession.Copy()
-	s := session.DB(dbname).C("posts")
+	/*
+		session := globalSession.Copy()
+		s := session.DB(dbname).C("posts")
 
-	user := GetUser(c)
+		user := GetUser(c)
 
-	// query for user
-	query := bson.M{
-		"author": user.Name,
-	}
+		// query for user
+		query := bson.M{
+			"author": user.Name,
+		}
 
-	// get posts
-	posts := []*Post{}
-	if err := s.Find(query).Sort("-timestamp").Iter().All(&posts); err != nil {
-		c.Error(err)
-		c.Redirect(302, "/error")
-	}
+		// get posts
+		posts := []*Post{}
+		if err := s.Find(query).Sort("-timestamp").Iter().All(&posts); err != nil {
+			c.Error(err)
+			c.Redirect(302, "/error")
+		}
 
-	c.HTML(http.StatusOK, "posts/me.html", gin.H{
-		"Site":  GetConf(),
-		"Posts": posts,
-		"User":  user,
-	})
+		c.HTML(http.StatusOK, "posts/me.html", gin.H{
+			"Site":  GetConf(),
+			"Posts": posts,
+			"User":  user,
+		})
+	*/
 }
 
 // GET /posts/view/:id
 func PostsView(c *gin.Context) {
-	session := globalSession.Copy()
+	p := c.Param("id")
+	pNum, err := strconv.Atoi(p)
+	if err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	post, err := queryPost(pNum)
+	if err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	// comments!
+	post.RenderHTML = template.HTML(post.BodyHTML)
+	c.HTML(200, "posts/view.html", gin.H{
+		"Post": post,
+		"User": GetUser(c),
+	})
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("posts")
 
 	// get obj id from hex
@@ -132,20 +175,53 @@ func PostsView(c *gin.Context) {
 		"Post":     post,
 		"Comments": tree,
 		"User":     GetUser(c),
-	})
+	})*/
 }
 
 // GET /posts/new
 func PostsNew(c *gin.Context) {
-	c.HTML(http.StatusOK, "posts/new.html", gin.H{
-		"Site": GetConf(),
+	c.HTML(200, "posts/new.html", gin.H{
+		//			"Site": GetConf(),
 		"User": GetUser(c),
 	})
 }
 
 // POST /posts/new
 func PostsTryNew(c *gin.Context) {
-	session := globalSession.Copy()
+	var postform PostForm
+	err := c.Bind(&postform)
+	if err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	user := GetUser(c)
+	id, err := queryUserID(user.Name)
+	if err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	html := string(blackfriday.MarkdownCommon([]byte(postform.Body)))
+	post := SQLPost{
+		Userid:     id,
+		Title:      postform.Title,
+		Body:       postform.Body,
+		BodyHTML:   html,
+		Categoryid: 0,
+		Posted:     time.Now().Unix(),
+		Updated:    time.Now().Unix(),
+	}
+
+	err = writePost(post)
+	if err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	c.Redirect(302, "/posts")
+
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("posts")
 
 	conf := GetConf()
@@ -185,12 +261,12 @@ func PostsTryNew(c *gin.Context) {
 	} else {
 		c.Error(err)
 		c.Redirect(302, "/error")
-	}
+	}*/
 }
 
 // GET /posts/edit/:id
 func PostsEdit(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("posts")
 
 	// get obj id from hex
@@ -214,13 +290,13 @@ func PostsEdit(c *gin.Context) {
 		})
 	} else {
 		c.Redirect(302, "/auth/sign-in")
-	}
+	}*/
 
 }
 
 // POST /posts/edit
 func PostsTryEdit(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("posts")
 
 	conf := GetConf()
@@ -277,12 +353,12 @@ func PostsTryEdit(c *gin.Context) {
 	} else {
 		c.Error(err)
 		c.Redirect(302, "/error")
-	}
+	}*/
 }
 
 // GET /posts/del/:id
 func PostsTryDelete(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("posts")
 
 	user := GetUser(c)
@@ -308,5 +384,5 @@ func PostsTryDelete(c *gin.Context) {
 		c.Redirect(302, "/posts/me")
 	} else {
 		c.Redirect(302, "/auth/sign-in")
-	}
+	}*/
 }

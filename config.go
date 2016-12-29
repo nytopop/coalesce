@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type SiteConfig struct {
@@ -33,17 +32,17 @@ type SiteConfig struct {
 
 // Get active site configuration
 func GetConf() SiteConfig {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("conf")
 
 	query := bson.M{
 		"name": "siteconfig",
-	}
+	}*/
 
 	conf := SiteConfig{}
-	if err := s.Find(query).One(&conf); err != nil {
+	/*if err := s.Find(query).One(&conf); err != nil {
 		return SiteConfig{}
-	}
+	}*/
 
 	return conf
 }
@@ -58,21 +57,21 @@ func ConfigEdit(c *gin.Context) {
 
 // POST /config/edit
 func ConfigTryEdit(c *gin.Context) {
-	session := globalSession.Copy()
-	s := session.DB(dbname).C("conf")
+	/*session := globalSession.Copy()
+	s := session.DB(dbname).C("conf")*/
 
 	// validate
 	var confform SiteConfig
 	if err := c.Bind(&confform); err == nil {
 		confform.Name = "siteconfig"
-		query := bson.M{
+		/*query := bson.M{
 			"name": "siteconfig",
 		}
 
 		if _, err := s.Upsert(&query, &confform); err != nil {
 			c.Error(err)
 			c.Redirect(302, "/error")
-		}
+		}*/
 	}
 
 	c.Redirect(302, "/config")
@@ -80,7 +79,7 @@ func ConfigTryEdit(c *gin.Context) {
 
 // POST /config/reset
 func ConfigTryReset(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("conf")
 
 	conf := SiteConfig{
@@ -99,7 +98,7 @@ func ConfigTryReset(c *gin.Context) {
 	if _, err := s.Upsert(&query, &conf); err != nil {
 		c.Error(err)
 		c.Redirect(302, "/error")
-	}
+	}*/
 
 	c.Redirect(302, "/config")
 }

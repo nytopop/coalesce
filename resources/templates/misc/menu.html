@@ -1,32 +1,19 @@
 {{ define "misc/menu.html" }}
-<!-- Menu -->
-<nav id="menu">
-	{{ if gt .User.AccessLevel 0 }}
-	<h4><a href="/posts/me">{{ .User.Name }}</a></h4>
-	{{ else }}
-	<h4>{{ .User.Name }}</h4>
-	{{ end }}
-<h2>Menu</h2>
 <ul>
-<li><a href="/posts">Posts</a></li>
-{{ if eq .User.AccessLevel 3 }}
-<li><a href="/users/all">Users</a></li>
-{{ end }}
-{{ if gt .User.AccessLevel 1 }}
-<li><a href="/img">Images</a></li>
-<li><a href="/posts/new">New Post</a></li>
-<li><a href="/img/new">Upload Images</a></li>
-{{ end }}
-{{ if eq .User.AccessLevel 3 }}
-<li><a href="/config">Config</a></li>
-{{ end }}
-{{ if eq .User.AccessLevel 0 }}
-<li><a href="/auth/sign-in">Sign in</a></li>
-<li><a href="/auth/register">Register</a></li>
-{{ end }}
-{{ if gt .User.AccessLevel 0 }}
-<li><a href="/auth/sign-out">Sign out</a></li>
-{{ end }}
+  <li><a href="/posts">Posts</a></li>
+  {{ if eq .User.AccessLevel 3 }}
+  <li><a href="/users/all">Users</a></li>
+  {{ end }}
+  {{ if eq .User.AccessLevel 2 }}
+  <li><a href="/posts/new">Write</a></li>
+  {{ end }}
+  {{ if eq .User.AccessLevel 0 }}
+  <li><a href="/auth/sign-in">Sign In</a></li>
+  <li><a href="/auth/register">Register</a></li>
+  {{ end }}
+  {{ if gt .User.AccessLevel 0 }}
+  <li><a href="/auth/sign-out">Sign Out</a></li>
+  <li><a href="/posts/me">{{ .User.Name }}</a></li>
+  {{ end }}
 </ul>
-</nav>
 {{ end }}

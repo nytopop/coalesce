@@ -3,9 +3,6 @@
 package main
 
 import (
-	"bytes"
-	"image"
-	"image/jpeg"
 	"mime/multipart"
 	"net/http"
 	"time"
@@ -17,7 +14,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/gin-gonic/gin"
-	"github.com/nfnt/resize"
 )
 
 type Img struct {
@@ -31,7 +27,7 @@ type Img struct {
 
 // GET /img
 func ImgAll(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	db := session.DB(dbname)
 	gfs := db.GridFS("images")
 
@@ -45,12 +41,12 @@ func ImgAll(c *gin.Context) {
 		"Site": GetConf(),
 		"User": GetUser(c),
 		"Imgs": imgs,
-	})
+	})*/
 }
 
 // GET /img/thumb/:id
 func ImgThumb(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	db := session.DB(dbname)
 	gfs := db.GridFS("thumbs")
 
@@ -72,12 +68,12 @@ func ImgThumb(c *gin.Context) {
 	}
 
 	// send
-	c.Data(http.StatusOK, "image/jpg", buf.Bytes())
+	c.Data(http.StatusOK, "image/jpg", buf.Bytes())*/
 }
 
 // GET /img/view/:id
 func ImgView(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	db := session.DB(dbname)
 	gfs := db.GridFS("images")
 
@@ -98,12 +94,12 @@ func ImgView(c *gin.Context) {
 	buf.ReadFrom(file)
 
 	// send
-	c.Data(http.StatusOK, "image/jpg", buf.Bytes())
+	c.Data(http.StatusOK, "image/jpg", buf.Bytes())*/
 }
 
 // GET /img/del/:id
 func ImgTryDelete(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	db := session.DB(dbname)
 	imgfs := db.GridFS("images")
 	thumbfs := db.GridFS("thumbs")
@@ -121,7 +117,7 @@ func ImgTryDelete(c *gin.Context) {
 		c.Redirect(302, "/error")
 	}
 
-	c.Redirect(302, "/img")
+	c.Redirect(302, "/img")*/
 }
 
 // GET /img/new
@@ -158,7 +154,7 @@ func ImgTryNew(c *gin.Context) {
 }
 
 func WriteImage(h *multipart.FileHeader) (error, string) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	db := session.DB(dbname)
 	gfs := db.GridFS("images")
 
@@ -190,13 +186,14 @@ func WriteImage(h *multipart.FileHeader) (error, string) {
 		return err, ""
 	}
 
-	id := i.Id().(bson.ObjectId).Hex()
+	id := i.Id().(bson.ObjectId).Hex()*/
 
-	return nil, id
+	//return nil, id
+	return nil, "nil"
 }
 
 func WriteThumb(h *multipart.FileHeader, id string) error {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	db := session.DB(dbname)
 	gfs := db.GridFS("thumbs")
 
@@ -228,7 +225,7 @@ func WriteThumb(h *multipart.FileHeader, id string) error {
 
 	if err := i.Close(); err != nil {
 		return err
-	}
+	}*/
 
 	return nil
 }

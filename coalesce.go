@@ -3,23 +3,37 @@
 package main
 
 import (
+	"log"
 	"os"
 	"runtime"
 
-	mgo "gopkg.in/mgo.v2"
+	"database/sql"
+
+	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-var globalSession, _ = mgo.Dial(os.Getenv("DATABASE_PORT_27017_TCP_ADDR"))
-var dbname = os.Getenv("DB_NAME")
+//var globalSession, _ = mgo.Dial(os.Getenv("DATABASE_PORT_27017_TCP_ADDR"))
+//var dbname = os.Getenv("DB_NAME")
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
+	var err error
+	sqdb, err = sql.Open("sqlite3", "coalesce.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer sqdb.Close()
+
 	// BUG: panics if no database connection
-	CreateAdmin()
+	//CreateAdmin()
+
+	if err := initDB(); err != nil {
+		log.Fatal(err)
+	}
 
 	// TODO: initial config mode if db empty
 
@@ -32,8 +46,9 @@ func main() {
 	pub.Use(gin.Recovery())
 
 	// session management
-	secret := "wowzaverysecretivelucraciobuddy"
-	store := sessions.NewCookieStore([]byte(secret))
+	//secret := "wowzaverysecretivelucraciobuddy"
+	secret := []byte(os.Getenv("SESSION_SECRET"))
+	store := sessions.NewCookieStore(secret)
 	pub.Use(sessions.Sessions("coalesce", store))
 
 	// authentication
@@ -58,7 +73,7 @@ func main() {
 	editors.GET("/img/del/:id", ImgTryDelete)
 
 	// /posts
-	pub.GET("/posts", PostsAll)
+	pub.GET("/posts", PostsPage)
 	pub.GET("/posts/view/:id", PostsView)
 	commentors.GET("/posts/me", PostsMe)
 	editors.GET("/posts/new", PostsNew)

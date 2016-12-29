@@ -2,16 +2,22 @@
 
 package main
 
-import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-	"gopkg.in/mgo.v2/bson"
-)
+import "github.com/gin-gonic/gin"
 
 // GET /users/all
 func UsersAll(c *gin.Context) {
-	session := globalSession.Copy()
+	users, err := queryUsersAll()
+	if err != nil {
+		c.Error(err)
+		c.Redirect(302, "/error")
+	}
+
+	c.HTML(200, "users/all.html", gin.H{
+		"Users": users,
+		"User":  GetUser(c),
+	})
+
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("users")
 
 	// query for all users
@@ -25,12 +31,12 @@ func UsersAll(c *gin.Context) {
 		"Site":  GetConf(),
 		"Users": users,
 		"User":  GetUser(c),
-	})
+	})*/
 }
 
 // GET /users/promote/:name
 func UsersTryPromote(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("users")
 
 	// query for user
@@ -53,12 +59,12 @@ func UsersTryPromote(c *gin.Context) {
 		c.Redirect(302, "/error")
 	}
 
-	c.Redirect(302, "/users/all")
+	c.Redirect(302, "/users/all")*/
 }
 
 // GET /users/demote/:name
 func UsersTryDemote(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("users")
 
 	// query for user
@@ -81,12 +87,12 @@ func UsersTryDemote(c *gin.Context) {
 		c.Redirect(302, "/error")
 	}
 
-	c.Redirect(302, "/users/all")
+	c.Redirect(302, "/users/all")*/
 }
 
 // GET /users/del/:name
 func UsersTryDelete(c *gin.Context) {
-	session := globalSession.Copy()
+	/*session := globalSession.Copy()
 	s := session.DB(dbname).C("users")
 
 	name := c.Param("name")
@@ -103,5 +109,5 @@ func UsersTryDelete(c *gin.Context) {
 		}
 	}
 
-	c.Redirect(302, "/users/all")
+	c.Redirect(302, "/users/all")*/
 }
