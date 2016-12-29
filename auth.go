@@ -7,6 +7,7 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,15 @@ type SQLUser struct {
 	AccessLevel int
 }
 
+func GeneratePepper() (string, error) {
+	r := make([]byte, 1)
+	_, err := rand.Read(r)
+	if err != nil {
+		return "", err
+	}
+	return strconv.Itoa(int(r[0])), nil
+}
+
 func GenerateSalt() (string, error) {
 	r := make([]byte, 32)
 	_, err := rand.Read(r)
@@ -41,8 +51,8 @@ func GenerateSalt() (string, error) {
 	return hex.EncodeToString(hash[:]), nil
 }
 
-func ComputeToken(salt, pw string) string {
-	chars := salt + pw
+func ComputeToken(salt, pepper, pw string) string {
+	chars := salt + pepper + pw
 	hash := sha512.Sum512([]byte(chars))
 	return hex.EncodeToString(hash[:])
 }
@@ -137,8 +147,17 @@ func AuthTrySignIn(c *gin.Context) {
 		return
 	}
 
-	token := ComputeToken(user.Salt, authform.Password)
-	if token != user.Token {
+	// iterate through peppers until we get a match
+	match := false
+	for i := 0; i < 256; i++ {
+		token := ComputeToken(user.Salt, strconv.Itoa(i), authform.Password)
+		if token == user.Token {
+			match = true
+			break
+		}
+	}
+
+	if !match {
 		c.Redirect(302, "/auth/sign-in")
 	} else {
 		cookies.Set("userid", user.Userid)
@@ -184,7 +203,14 @@ func AuthTryRegister(c *gin.Context) {
 			RenderErr(c, err)
 			return
 		}
-		token := ComputeToken(salt, authform.Password)
+
+		pepper, err := GeneratePepper()
+		if err != nil {
+			RenderErr(c, err)
+			return
+		}
+
+		token := ComputeToken(salt, pepper, authform.Password)
 
 		// create the user from form
 		user := SQLUser{

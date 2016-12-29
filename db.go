@@ -32,7 +32,12 @@ func initDB() error {
 		return err
 	}
 
-	token := ComputeToken(salt, pass)
+	pepper, err := GeneratePepper()
+	if err != nil {
+		return err
+	}
+
+	token := ComputeToken(salt, pepper, pass)
 	adm := SQLUser{
 		Name:        "admin",
 		Salt:        salt,
