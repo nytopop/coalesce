@@ -175,6 +175,58 @@ func deletePost(post int) error {
 	return err
 }
 
+func queryCommentsPost(post int) ([]SQLComment, error) {
+	s := `SELECT * FROM comments WHERE postid=? ORDER BY commentid DESC`
+
+	rows, err := sqdb.Query(s, post)
+	if err != nil {
+		return []SQLComment{}, err
+	}
+
+	comments := []SQLComment{}
+	for rows.Next() {
+		c := SQLComment{}
+		err = rows.Scan(
+			&c.Commentid,
+			&c.Postid,
+			&c.Parentid,
+			&c.Userid,
+			&c.Body,
+			&c.Posted,
+			&c.Updated)
+		if err != nil {
+			return []SQLComment{}, err
+		}
+		comments = append(comments, c)
+	}
+
+	return comments, nil
+}
+
+func writeComment(c SQLComment) error {
+	s := `INSERT INTO comments VALUES (?, ?, ?, ?, ?, ?, ?)`
+	_, err := sqdb.Exec(s, nil,
+		c.Postid,
+		nil,
+		c.Userid,
+		c.Body,
+		c.Posted,
+		c.Updated)
+	return err
+}
+
+func writeCommentReply(c SQLComment) error {
+	s := `INSERT INTO comments VALUES (?, ?, ?, ?, ?, ?, ?)`
+	_, err := sqdb.Exec(s, nil,
+		c.Postid,
+		c.Parentid.Int64,
+		c.Userid,
+		c.Body,
+		c.Posted,
+		c.Updated)
+	return err
+}
+
 func queryUsersAll() ([]SQLUser, error) {
 	s := `SELECT * FROM users WHERE username!="admin" ORDER BY userid`
 

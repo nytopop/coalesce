@@ -91,10 +91,17 @@ func PostsView(c *gin.Context) {
 	}
 
 	// comments!
+	comments, err := CommentsForPost(pNum)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
 	post.RenderHTML = template.HTML(post.BodyHTML)
 	c.HTML(200, "posts/view.html", gin.H{
-		"Post": post,
-		"User": GetUser(c),
+		"Post":     post,
+		"Comments": comments,
+		"User":     GetUser(c),
 	})
 }
 

@@ -71,8 +71,11 @@ pre {
 .postSubmitBox {
 	width: calc(100%);
 	max-width: calc(100%);
-	float: center;
 	margin-right: 0.5em;	
+}
+
+.center {
+	text-align: center;
 }
 
 table {
@@ -109,6 +112,36 @@ li a {
 li a:hover {
 	background-color: #111;
 	color: #f0f0f0;
+}
+
+/*.collapse {
+	vertical-align: top;
+}
+.collapse > a {
+  cursor: pointer;
+  display: block;
+}
+.collapse:focus {
+  outline: none;
+}
+.collapse > div {
+  display: none;
+}
+.collapse:focus div {
+  display: block; 
+}*/
+.collapse{
+  cursor: pointer;
+  display: block;
+}
+.collapse + input{
+  display: none; /* hide the checkboxes */
+}
+.collapse + input + div{
+  display:none;
+}
+.collapse + input:checked + div{
+  display:block;
 }
 
 span.serif {

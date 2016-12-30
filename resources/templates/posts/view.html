@@ -28,6 +28,35 @@
 	<a href="" style="float: left;">Prev</a>
 	<a href="" style="float: right;">Next</a>
 </footer>
+
+<h2>Comments</h2>
+<form method="post" action="/comments/new">
+  <input type="hidden" name="postid" id="postid" value="{{ .Post.Postid }}">
+
+  <textarea id="body" name="body" class="postSubmitBox" required></textarea>
+
+  <div class="center"><button type="submit">Comment</button></div>
+</form>
+
+{{ range $k, $v := .Comments }}
+<div style="padding-left: {{ $v.Indent }}em;">
+{{ $v.Separator }} {{ $v.Body }}
+<label class="collapse" for="{{ $v.Commentid }}"><b>reply</b></label>
+<input id="{{ $v.Commentid }}" type="checkbox">
+<div>
+  <form method="post" action="/comments/reply">
+    <input type="hidden" name="postid" id="postid" value="{{ $.Post.Postid }}">
+    <input type="hidden" name="commentid" id="commentid" value="{{ $v.Commentid}}">
+
+    <textarea id="body" name="body" class="postSubmitBox" required></textarea>
+
+    <button type="submit">Comment</button>
+  </form>
+</div>
+</div>
+<br>
+{{ end }}
+
 </body>
 
 </html>

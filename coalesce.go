@@ -83,7 +83,7 @@ func main() {
 
 	// /comments
 	pub.POST("/comments/new", CommentsTryNew)
-	//pub.POST("/comments/reply", CommentsTryReply)
+	pub.POST("/comments/reply", CommentsTryReply)
 
 	// /auth
 	pub.GET("/auth/sign-in", AuthSignIn)

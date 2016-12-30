@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS comments (
     userid            REFERENCES users (userid) 
                       NOT NULL,
     body      TEXT    NOT NULL,
-    bodyHTML  TEXT    NOT NULL,
+--    bodyHTML  TEXT    NOT NULL,
     posted    INTEGER NOT NULL,
     updated   INTEGER NOT NULL
 );
