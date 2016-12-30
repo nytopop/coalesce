@@ -82,8 +82,9 @@ func main() {
 	editors.GET("/posts/del/:id", PostsTryDelete)
 
 	// /comments
-	pub.POST("/comments/new", CommentsTryNew)
-	pub.POST("/comments/reply", CommentsTryReply)
+	commentors.POST("/comments/new", CommentsTryNew)
+	commentors.POST("/comments/reply", CommentsTryReply)
+	commentors.GET("/comments/del/:id", CommentsTryDelete)
 
 	// /auth
 	pub.GET("/auth/sign-in", AuthSignIn)

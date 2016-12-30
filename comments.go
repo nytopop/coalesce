@@ -4,7 +4,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -42,14 +41,31 @@ type SQLComment struct {
 	Body      string
 	Posted    int64
 	Updated   int64
+	// Not in SQL below this comment
 	Separator string
 	Indent    int
+	Username  string
+	Nicetime  string
 }
 
 func CommentsForPost(postid int) ([]SQLComment, error) {
 	raw, err := queryCommentsPost(postid)
 	if err != nil {
 		return []SQLComment{}, err
+	}
+
+	userCache := map[int]string{}
+	for i, c := range raw {
+		// query db and add to userCache if we haven't
+		if _, ok := userCache[c.Userid]; !ok {
+			user, err := queryUserID(c.Userid)
+			if err != nil {
+				return []SQLComment{}, err
+			}
+			userCache[user.Userid] = user.Name
+		}
+		raw[i].Username = userCache[c.Userid]
+		raw[i].Nicetime = NiceTime(c.Posted)
 	}
 
 	tree := []SQLComment{}
@@ -60,10 +76,6 @@ func CommentsForPost(postid int) ([]SQLComment, error) {
 		}
 	}
 
-	for _, c := range tree {
-		fmt.Println(c.Separator, c.Body)
-	}
-
 	return tree, nil
 }
 
@@ -72,7 +84,6 @@ func CommentTree(root SQLComment, comments []SQLComment) []SQLComment {
 	out := []SQLComment{root}
 	for _, c := range comments {
 		if c.Parentid.Int64 == root.Commentid {
-			fmt.Println("found reply!!!")
 			replies := CommentTree(c, comments)
 			for i, _ := range replies {
 				replies[i].Separator += "|"
@@ -82,10 +93,6 @@ func CommentTree(root SQLComment, comments []SQLComment) []SQLComment {
 		}
 	}
 	return out
-
-	// add root comment
-	// recurse for replies to root
-	// base case: no more replies
 }
 
 // POST /comments/new
@@ -150,8 +157,6 @@ func CommentsTryReply(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(parent)
-
 	user := GetUser(c)
 	reply := SQLComment{
 		Postid:   pNum,
@@ -169,4 +174,10 @@ func CommentsTryReply(c *gin.Context) {
 
 	posturl := "/posts/view/" + rform.Postid
 	c.Redirect(302, posturl)
+}
+
+// TODO for tomorrow
+func CommentsTryDelete(c *gin.Context) {
+	// if comment has replies, we set message to <deleted>
+	// if comment has no replies, we delete from db
 }

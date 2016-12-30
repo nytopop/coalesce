@@ -30,18 +30,32 @@
 </footer>
 
 <h2>Comments</h2>
+{{ if gt .User.AccessLevel 0 }}
+<label class="collapse" for="commenting"><b>Leave Comment</b></label>
+<input id="commenting" type="checkbox">
+<div>
 <form method="post" action="/comments/new">
   <input type="hidden" name="postid" id="postid" value="{{ .Post.Postid }}">
 
   <textarea id="body" name="body" class="postSubmitBox" required></textarea>
 
-  <div class="center"><button type="submit">Comment</button></div>
+  <button type="submit">Publish</button>
 </form>
+</div>
+<br>
+{{ end }}
 
 {{ range $k, $v := .Comments }}
 <div style="padding-left: {{ $v.Indent }}em;">
-{{ $v.Separator }} {{ $v.Body }}
-<label class="collapse" for="{{ $v.Commentid }}"><b>reply</b></label>
+{{ $v.Separator }} <b>{{ $v.Username }}</b> {{ $v.Nicetime }}
+<br>
+{{ $v.Body }}
+<br>
+{{ if gt $.User.AccessLevel 0 }}
+{{ if eq $.User.Userid $v.Userid }}
+<a href="/comments/del/{{ $v.Commentid }}"><b>delete</b></a>
+{{ end }}
+<label style="display: inline;" class="collapse" for="{{ $v.Commentid }}"><b>reply</b></label>
 <input id="{{ $v.Commentid }}" type="checkbox">
 <div>
   <form method="post" action="/comments/reply">
@@ -50,11 +64,13 @@
 
     <textarea id="body" name="body" class="postSubmitBox" required></textarea>
 
-    <button type="submit">Comment</button>
+    <button type="submit">Publish</button>
   </form>
 </div>
-</div>
 <br>
+{{ end }}
+<br>
+</div>
 {{ end }}
 
 </body>

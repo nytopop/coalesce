@@ -4,6 +4,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -225,6 +226,12 @@ func writeCommentReply(c SQLComment) error {
 		c.Posted,
 		c.Updated)
 	return err
+}
+
+func deleteCommentID(c SQLComment) error {
+	s := `DELETE FROM comments WHERE commentid=?`
+	fmt.Println(s)
+	return nil
 }
 
 func queryUsersAll() ([]SQLUser, error) {

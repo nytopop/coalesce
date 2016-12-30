@@ -114,22 +114,6 @@ li a:hover {
 	color: #f0f0f0;
 }
 
-/*.collapse {
-	vertical-align: top;
-}
-.collapse > a {
-  cursor: pointer;
-  display: block;
-}
-.collapse:focus {
-  outline: none;
-}
-.collapse > div {
-  display: none;
-}
-.collapse:focus div {
-  display: block; 
-}*/
 .collapse{
   cursor: pointer;
   display: block;
