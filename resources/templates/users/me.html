@@ -9,15 +9,12 @@
   <style>
   </style>
 </head>
-
 <body>
-  {{ template "misc/menu.html" . }}
-  {{ template "misc/usermenu.html" . }}
-  <h1>{{ .User.Name }}</h1>
- 
+{{ template "misc/menu.html" . }}
+{{ template "misc/usermenu.html" . }}
+<h1>{{ .User.Name }}</h1>
 <footer>
 </footer>
 </body>
-
 </html>
 {{ end }}

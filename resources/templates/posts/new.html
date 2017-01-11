@@ -9,24 +9,18 @@
   <style>
   </style>
 </head>
-
 <body>
-  {{ template "misc/menu.html" . }}
-  <h1>New Post</h1>
-
+{{ template "misc/menu.html" . }}
+<h1>New Post</h1>
 <form method="post" action="/posts/new">
   <h2><label for="title">Title</label></h2>
   <input type="text" name="title" id="title" class="postSubmitBox" required>
-
   <h2><label for="body">Body (markdown)</label></h2>
   <textarea id="body" name="body" class="postSubmitBox" required></textarea>
-
   <h2><button type="submit">Submit</button></h2>
 </form>
-
 <footer>
 </footer>
 </body>
-
 </html>
 {{ end }}

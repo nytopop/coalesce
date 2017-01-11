@@ -9,21 +9,18 @@
   <style>
   </style>
 </head>
-
 <body>
-  {{ template "misc/menu.html" . }}
-  {{ template "misc/usermenu.html" . }}
-  <h1>My Posts</h1>
- 
-  {{ range $k, $v := .Posts }}
-  <a href="/posts/view/{{ $v.Postid }}">{{ $v.Title }} </a>
-  <br>
-  {{ end }}
+{{ template "misc/menu.html" . }}
+{{ template "misc/usermenu.html" . }}
+<h1>My Posts</h1>
+{{ range $k, $v := .Posts }}
+<a href="/posts/view/{{ $v.Postid }}">{{ $v.Title }} </a>
+<br>
+{{ end }}
 <footer>
-	<a href="" style="float: left;">Prev</a>
-	<a href="" style="float: right;">Next</a>
+  <a href="" style="float: left;">Prev</a>
+  <a href="" style="float: right;">Next</a>
 </footer>
 </body>
-
 </html>
 {{ end }}

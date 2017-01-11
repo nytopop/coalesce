@@ -9,20 +9,17 @@
   <style>
   </style>
 </head>
-
 <body>
   {{ template "misc/menu.html" . }}
   <h1>Posts</h1>
- 
   {{ range $k, $v := .Posts }}
   <a href="/posts/view/{{ $v.Postid }}">{{ $v.Title }} </a>
   <br>
   {{ end }}
 <footer>
-	<a href="" style="float: left;">Prev</a>
-	<a href="" style="float: right;">Next</a>
+  <a href="" style="float: left;">Prev</a>
+  <a href="" style="float: right;">Next</a>
 </footer>
 </body>
-
 </html>
 {{ end }}

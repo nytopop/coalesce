@@ -9,12 +9,10 @@
   <style>
   </style>
 </head>
-
 <body>
-  {{ template "misc/menu.html" . }}
-  <h1>You've reached an error. We're soooorry.</h1>
-  <pre>{{ .Error }}</pre>
+{{ template "misc/menu.html" . }}
+<h1>You've reached an error. We're soooorry.</h1>
+<pre>{{ .Error }}</pre>
 </body>
-
 </html>
 {{ end }}

@@ -9,71 +9,59 @@
   <style>
   </style>
 </head>
-
 <body>
-  {{ template "misc/menu.html" . }}
-
-  {{ if eq .User.Userid .Post.Userid }}
-  <ul>
-    <li><a href="/posts/edit/{{ .Post.Postid }}">Edit</a></li>
-	<li><a href="/posts/del/{{ .Post.Postid }}" onclick="return confirm('Are you sure?')">Delete</a></li>
-  </ul>
-  {{ end }}
-
-  <h1>{{ .Post.Title }}</h1>
-
-  {{ .Post.RenderHTML }} 
-
+{{ template "misc/menu.html" . }}
+{{ if eq .User.Userid .Post.Userid }}
+<ul>
+  <li><a href="/posts/edit/{{ .Post.Postid }}">Edit</a></li>
+  <li><a href="/posts/del/{{ .Post.Postid }}" onclick="return confirm('Are you sure?')">Delete</a></li>
+</ul>
+{{ end }}
+<h1>{{ .Post.Title }}</h1>
+{{ .Post.RenderHTML }} 
 <footer>
-	<a href="" style="float: left;">Prev</a>
-	<a href="" style="float: right;">Next</a>
+  <a href="" style="float: left;">Prev</a>
+  <a href="" style="float: right;">Next</a>
 </footer>
-
 <h2>Comments</h2>
 {{ if gt .User.AccessLevel 0 }}
 <label class="collapse" for="commenting"><b>Leave Comment</b></label>
 <input id="commenting" type="checkbox">
 <div>
-<form method="post" action="/comments/new">
-  <input type="hidden" name="postid" id="postid" value="{{ .Post.Postid }}">
-
-  <textarea id="body" name="body" class="postSubmitBox" required></textarea>
-
-  <button type="submit">Publish</button>
-</form>
-</div>
-<br>
-{{ end }}
-
-{{ range $k, $v := .Comments }}
-<div style="padding-left: {{ $v.Indent }}em;">
-{{ $v.Separator }} <b>{{ $v.Username }}</b> {{ $v.Nicetime }}
-<br>
-{{ $v.Body }}
-<br>
-{{ if gt $.User.AccessLevel 0 }}
-{{ if eq $.User.Userid $v.Userid }}
-<a href="/comments/del/{{ $v.Commentid }}"><b>delete</b></a>
-{{ end }}
-<label style="display: inline;" class="collapse" for="{{ $v.Commentid }}"><b>reply</b></label>
-<input id="{{ $v.Commentid }}" type="checkbox">
-<div>
-  <form method="post" action="/comments/reply">
-    <input type="hidden" name="postid" id="postid" value="{{ $.Post.Postid }}">
-    <input type="hidden" name="commentid" id="commentid" value="{{ $v.Commentid}}">
-
+  <form method="post" action="/comments/new">
+    <input type="hidden" name="postid" id="postid" value="{{ .Post.Postid }}">
     <textarea id="body" name="body" class="postSubmitBox" required></textarea>
-
     <button type="submit">Publish</button>
   </form>
 </div>
 <br>
 {{ end }}
-<br>
+{{ range $k, $v := .Comments }}
+<div style="padding-left: {{ $v.Indent }}em;">
+  {{ $v.Separator }} <b>{{ $v.Username }}</b> {{ $v.Nicetime }}
+  <br>
+  {{ $v.Body }}
+  <br>
+  {{ if gt $.User.AccessLevel 0 }}
+  {{ if eq $.User.Userid $v.Userid }}
+  <a href="/comments/del/{{ $v.Commentid }}"><b>delete</b></a>
+  {{ end }}
+  <label style="display: inline;" class="collapse" for="{{ $v.Commentid }}"><b>reply</b></label>
+  <input id="{{ $v.Commentid }}" type="checkbox">
+  <div>
+    <form method="post" action="/comments/reply">
+      <input type="hidden" name="postid" id="postid" value="{{ $.Post.Postid }}">
+      <input type="hidden" name="commentid" id="commentid" value="{{ $v.Commentid}}">
+      <textarea id="body" name="body" class="postSubmitBox" required></textarea>
+
+      <button type="submit">Publish</button>
+    </form>
+  </div>
+  <br>
+  {{ end }}
+  <br>
 </div>
 {{ end }}
-
 </body>
-
 </html>
 {{ end }}

@@ -9,27 +9,24 @@
   <style>
   </style>
 </head>
-
 <body>
-  {{ template "misc/menu.html" . }}
-  {{ template "misc/usermenu.html" . }}
-  <h1>All Users</h1>
-
-  {{ range $k, $v := .Users }}
-  <a href="/user/del/{{ $v.Userid }}" onclick="return confirm('Are you sure?')">Delete</a>
-  {{ if eq $v.AccessLevel 1 }}
-  <a href="/users/promote/{{ $v.Userid }}" onclick="return confirm('Are you sure?')">Promote</a>
-  (commentor)
-  {{ else if eq $v.AccessLevel 2}}
-  <a href="/users/demote/{{ $v.Userid }}" onclick="return confirm('Are you sure?')">Demote</a>
-  (editor)
-  {{ end }}
-  {{ $v.Name }}
-  <br>
-  {{ end }}
-  <footer>
-  </footer>
+{{ template "misc/menu.html" . }}
+{{ template "misc/usermenu.html" . }}
+<h1>All Users</h1>
+{{ range $k, $v := .Users }}
+<a href="/user/del/{{ $v.Userid }}" onclick="return confirm('Are you sure?')">Delete</a>
+{{ if eq $v.AccessLevel 1 }}
+<a href="/users/promote/{{ $v.Userid }}" onclick="return confirm('Are you sure?')">Promote</a>
+(commentor)
+{{ else if eq $v.AccessLevel 2}}
+<a href="/users/demote/{{ $v.Userid }}" onclick="return confirm('Are you sure?')">Demote</a>
+(editor)
+{{ end }}
+{{ $v.Name }}
+<br>
+{{ end }}
+<footer>
+</footer>
 </body>
-
 </html>
 {{ end }}

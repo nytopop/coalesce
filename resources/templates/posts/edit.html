@@ -9,22 +9,17 @@
   <style>
   </style>
 </head>
-
 <body>
-  {{ template "misc/menu.html" . }}
-  <h1>Edit Post</h1>
-
-  <form method="post" action="/posts/edit/{{ .Post.Postid }}">
+{{ template "misc/menu.html" . }}
+<h1>Edit Post</h1>
+<form method="post" action="/posts/edit/{{ .Post.Postid }}">
   <h2><label for="title">Title</label></h2>
   <input type="text" name="title" id="title" class="postSubmitBox" value="{{ .Post.Title }}" required>
-
   <h2><label for="body">Body (markdown)</label></h2>
   <textarea id="body" name="body" class="postSubmitBox" required>{{ .Post.Body }}</textarea>
 
   <h2><button type="submit">Submit</button></h2>
 </form>
-
 </body>
-
 </html>
 {{ end }}
