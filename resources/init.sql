@@ -6,25 +6,18 @@
 PRAGMA foreign_keys = off;
 BEGIN TRANSACTION;
 
--- Table: categories
-CREATE TABLE IF NOT EXISTS categories (
-    categoryid INTEGER PRIMARY KEY ASC AUTOINCREMENT
-                       UNIQUE
-                       NOT NULL,
-    name       TEXT    UNIQUE
-                       NOT NULL
-);
-
-
 -- Table: comments
 CREATE TABLE IF NOT EXISTS comments (
     commentid INTEGER PRIMARY KEY ASC AUTOINCREMENT
                       UNIQUE
                       NOT NULL,
     postid    INTEGER REFERENCES posts (postid) 
+                      ON DELETE CASCADE
                       NOT NULL,
-    parentid  INTEGER REFERENCES comments (commentid),
+    parentid  INTEGER REFERENCES comments (commentid)
+                      ON DELETE CASCADE,
     userid            REFERENCES users (userid) 
+                      ON DELETE CASCADE
                       NOT NULL,
     body      TEXT    NOT NULL,
 --    bodyHTML  TEXT    NOT NULL,
@@ -39,6 +32,7 @@ CREATE TABLE IF NOT EXISTS images (
                       NOT NULL
                       UNIQUE,
     userid    INTEGER REFERENCES users (userid) 
+                      ON DELETE CASCADE
                       NOT NULL,
     md5       TEXT    NOT NULL,
     thumb_md5 TEXT    NOT NULL,
@@ -52,11 +46,11 @@ CREATE TABLE IF NOT EXISTS posts (
                        UNIQUE
                        NOT NULL,
     userid     INTEGER REFERENCES users (userid) 
+                       ON DELETE CASCADE
                        NOT NULL,
     title      TEXT    NOT NULL,
     body       TEXT,
     bodyHTML   TEXT,
---    categoryid INTEGER REFERENCES categories (categoryid),
     posted     INTEGER NOT NULL,
     updated    INTEGER NOT NULL
 );

@@ -6,6 +6,23 @@ A lightning fast multi-user blogging platform in Go. Currently in pre-alpha phas
 
 Coalesce runs as a single binary using the native net/http webserver. It is designed to run behind a reverse proxy such as haproxy / nginx / apache.
 
+## TODO
+
+- [ ] Comment delete
+- [ ] User delete
+- [x] Post delete with comments
+- [ ] Image CRUD
+- [ ] Search
+- [ ] Display author / timestamp of posts in list and view
+- [x] Cascading delete
+- [ ] /users/me page, # comments, # posts, user information
+- [ ] /users/mycomments
+- [ ] Markdown commenting
+- [ ] Clean up SQL interface
+- [ ] systemd service files
+- [ ] configuration file or store configuration in DB
+- [ ] backup / restore database
+
 ## Technologies
 
 Docker
