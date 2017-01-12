@@ -2,7 +2,11 @@
 
 package models
 
-import "html/template"
+import (
+	"html/template"
+
+	"github.com/nytopop/coalesce/util"
+)
 
 type SQLPost struct {
 	Postid     int
@@ -14,6 +18,27 @@ type SQLPost struct {
 	Categoryid int
 	Posted     int64
 	Updated    int64
+	// Not in SQL below this line
+	Username    string
+	PostedNice  string
+	UpdatedNice string
+}
+
+func ProcessPosts(posts []SQLPost) ([]SQLPost, error) {
+	userCache := map[int]string{}
+	for i, post := range posts {
+		if _, ok := userCache[post.Userid]; !ok {
+			user, err := QueryUserID(post.Userid)
+			if err != nil {
+				return []SQLPost{}, err
+			}
+			userCache[user.Userid] = user.Name
+		}
+		posts[i].Username = userCache[post.Userid]
+		posts[i].PostedNice = util.NiceTime(post.Posted)
+		posts[i].UpdatedNice = util.NiceTime(post.Updated)
+	}
+	return posts, nil
 }
 
 func QueryPostsPage(page int) ([]SQLPost, error) {

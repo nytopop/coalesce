@@ -9,11 +9,11 @@ Coalesce runs as a single binary using the native net/http webserver. It is desi
 ## TODO
 
 - [ ] Comment delete
-- [ ] User delete
+- [x] User delete
 - [x] Post delete with comments
 - [ ] Image CRUD
 - [ ] Search
-- [ ] Display author / timestamp of posts in list and view
+- [x] Display author / timestamp of posts in list and view
 - [x] Cascading delete
 - [ ] /users/me page, # comments, # posts, user information
 - [ ] /users/mycomments

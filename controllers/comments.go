@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nytopop/coalesce/models"
+	"github.com/nytopop/coalesce/util"
 )
 
 type CommentForm struct {
@@ -39,7 +40,7 @@ func CommentsForPost(postid int) ([]models.SQLComment, error) {
 			userCache[user.Userid] = user.Name
 		}
 		raw[i].Username = userCache[c.Userid]
-		raw[i].Nicetime = NiceTime(c.Posted)
+		raw[i].Nicetime = util.NiceTime(c.Posted)
 	}
 
 	tree := []models.SQLComment{}

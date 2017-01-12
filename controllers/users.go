@@ -107,6 +107,12 @@ func UsersMyPosts(c *gin.Context) {
 		return
 	}
 
+	posts, err = models.ProcessPosts(posts)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
 	c.HTML(200, "users/myposts.html", gin.H{
 		"Posts": posts,
 		"User":  user,

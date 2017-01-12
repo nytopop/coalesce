@@ -15,6 +15,7 @@
 <h1>My Posts</h1>
 {{ range $k, $v := .Posts }}
 <a href="/posts/view/{{ $v.Postid }}">{{ $v.Title }} </a>
+<span style="float: right;">{{ $v.PostedNice }}</span>
 <br>
 {{ end }}
 <footer>

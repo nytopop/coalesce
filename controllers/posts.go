@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nytopop/coalesce/models"
+	"github.com/nytopop/coalesce/util"
 	"github.com/russross/blackfriday"
 )
 
@@ -22,44 +23,6 @@ type PostEditForm struct {
 	PostId string `form:"postid" binding:"required"`
 	Title  string `form:"title" binding:"required"`
 	Body   string `form:"body" binding:"required"`
-}
-
-func NiceTime(oldTime int64) string {
-	curTime := time.Now().Unix()
-	seconds := curTime - oldTime
-	var elapsed string
-
-	switch {
-	// < 2 minutes
-	case seconds < 120:
-		elapsed = strconv.Itoa(int(seconds))
-		return elapsed + " seconds ago"
-
-	// < 2 hours
-	case seconds < 7200:
-		elapsed = strconv.Itoa(int(seconds / 60))
-		return elapsed + " minutes ago"
-
-	// < 2 days
-	case seconds < 172800:
-		elapsed = strconv.Itoa(int(seconds / 60 / 60))
-		return elapsed + " hours ago"
-
-	// < 2 months
-	case seconds < 5256000:
-		elapsed = strconv.Itoa(int(seconds / 60 / 60 / 24))
-		return elapsed + " days ago"
-
-	// < 2 years
-	case seconds < 63072000:
-		elapsed = strconv.Itoa(int(seconds / 60 / 60 / 24 / 30))
-		return elapsed + " months ago"
-
-	// 2 years +
-	default:
-		elapsed = strconv.Itoa(int(seconds / 60 / 60 / 24 / 30 / 12))
-		return elapsed + " years ago"
-	}
 }
 
 // GET /
@@ -90,6 +53,28 @@ func PostsPage(c *gin.Context) {
 		return
 	}
 
+	posts, err = models.ProcessPosts(posts)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+	/*
+		// Attach username and compute 'Nicetime'
+		userCache := map[int]string{}
+		for i, post := range posts {
+			if _, ok := userCache[post.Userid]; !ok {
+				user, err := models.QueryUserID(post.Userid)
+				if err != nil {
+					RenderErr(c, err)
+					return
+				}
+				userCache[user.Userid] = user.Name
+			}
+			posts[i].Username = userCache[post.Userid]
+			posts[i].PostedNice = NiceTime(post.Posted)
+			posts[i].UpdatedNice = NiceTime(post.Updated)
+		}
+	*/
 	// render
 	c.HTML(200, "posts/page.html", gin.H{
 		"Posts": posts,
@@ -116,6 +101,16 @@ func PostsView(c *gin.Context) {
 		RenderErr(c, errors.New("Post not found"))
 		return
 	}
+
+	user, err := models.QueryUserID(post.Userid)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	post.Username = user.Name
+	post.PostedNice = util.NiceTime(post.Posted)
+	post.UpdatedNice = util.NiceTime(post.Updated)
 
 	// comments!
 	comments, err := CommentsForPost(pNum)
