@@ -1,13 +1,23 @@
 # We statically link because cannot link to scratch container's libc.
 
+PNAME = coalesce_0.1-1
+PDIR = build/$(PNAME)
+BDIR = build
+
 # Build .deb package.
 bin/coalesce.deb: bin/coalesce
-	echo building deb package!
+	mkdir $(PDIR)
+	mkdir $(PDIR)/usr
+	mkdir $(PDIR)/usr/bin
+	cp $(BDIR)/coalesce $(PDIR)/usr/bin/coalesce
+	mkdir $(PDIR)/DEBIAN
+	cp debian/* $(PDIR)/DEBIAN/
+	dpkg-deb --build $(PDIR)
 
 # Build binary
-bin/coalesce:
+bin/coalesce: clean
 	go fmt *.go
-	go build -ldflags '-linkmode external -extldflags -static -w' -o bin/coalesce
+	go build -ldflags '-linkmode external -extldflags -static -w' -o $(BDIR)/coalesce
 
 clean:
-	rm -f bin/coalesce bin/coalesce.deb
+	rm -rf build
