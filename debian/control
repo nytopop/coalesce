@@ -1,0 +1,27 @@
+Source: coalesce
+Section: devel
+Priority: extra
+Maintainer: Debian Go Packaging Team <pkg-go-maintainers@lists.alioth.debian.org>
+Uploaders: Eric Izoita <TODO>
+Build-Depends: debhelper (>= 10),
+               dh-golang,
+               golang-any,
+               golang-github-gin-gonic-contrib-dev,
+               golang-github-gin-gonic-gin-dev,
+               golang-github-mattn-go-sqlite3-dev,
+               golang-github-russross-blackfriday-dev,
+               golang-golang-x-crypto-dev,
+               golang-gopkg-mgo.v2-dev
+Standards-Version: 3.9.8
+Homepage: https://github.com/nytopop/coalesce
+Vcs-Browser: https://anonscm.debian.org/cgit/pkg-go/packages/coalesce.git
+Vcs-Git: https://anonscm.debian.org/git/pkg-go/packages/coalesce.git
+XS-Go-Import-Path: github.com/nytopop/coalesce
+
+Package: coalesce
+Architecture: any
+Built-Using: ${misc:Built-Using}
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: Lightning fast multi-user blogging platform in Go
+  All the blogs.
