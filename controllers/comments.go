@@ -4,6 +4,7 @@ package controllers
 
 import (
 	"database/sql"
+	"errors"
 	"strconv"
 	"time"
 
@@ -151,8 +152,30 @@ func CommentsTryReply(c *gin.Context) {
 	c.Redirect(302, posturl)
 }
 
-// TODO for tomorrow
+// GET /comments/del/:id
 func CommentsTryDelete(c *gin.Context) {
-	// if comment has replies, we set message to <deleted>
-	// if comment has no replies, we delete from db
+	rID := c.Param("id")
+	id, err := strconv.Atoi(rID)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	comment, err := models.QueryCommentID(id)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	user := GetUser(c)
+	if user.Userid != comment.Userid {
+		RenderErr(c, errors.New("Unauthorized!"))
+		return
+	} else {
+		models.DeleteCommentID(id)
+	}
+
+	pid := strconv.Itoa(comment.Postid)
+	posturl := "/posts/view/" + pid
+	c.Redirect(302, posturl)
 }

@@ -45,7 +45,7 @@
   <br>
   {{ if gt $.User.AccessLevel 0 }}
   {{ if eq $.User.Userid $v.Userid }}
-  <a href="/comments/del/{{ $v.Commentid }}"><b>delete</b></a>
+  <a href="/comments/del/{{ $v.Commentid }}" onclick="return confirm('Are you sure?')"><b>delete</b></a>
   {{ end }}
   <label style="display: inline;" class="collapse" for="{{ $v.Commentid }}"><b>reply</b></label>
   <input id="{{ $v.Commentid }}" type="checkbox">

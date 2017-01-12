@@ -2,10 +2,7 @@
 
 package models
 
-import (
-	"database/sql"
-	"fmt"
-)
+import "database/sql"
 
 type SQLComment struct {
 	Commentid int64
@@ -20,6 +17,32 @@ type SQLComment struct {
 	Indent    int
 	Username  string
 	Nicetime  string
+}
+
+func QueryCommentID(id int) (SQLComment, error) {
+	s := `SELECT * FROM comments WHERE commentid=?`
+
+	row, err := sqdb.Query(s, id)
+	if err != nil {
+		return SQLComment{}, err
+	}
+
+	c := SQLComment{}
+	for row.Next() {
+		err = row.Scan(
+			&c.Commentid,
+			&c.Postid,
+			&c.Parentid,
+			&c.Userid,
+			&c.Body,
+			&c.Posted,
+			&c.Updated)
+		if err != nil {
+			return SQLComment{}, err
+		}
+	}
+
+	return c, nil
 }
 
 func QueryCommentsPost(post int) ([]SQLComment, error) {
@@ -74,8 +97,8 @@ func WriteCommentReply(c SQLComment) error {
 	return err
 }
 
-func DeleteCommentID(c SQLComment) error {
+func DeleteCommentID(id int) error {
 	s := `DELETE FROM comments WHERE commentid=?`
-	fmt.Println(s)
-	return nil
+	_, err := sqdb.Exec(s, id)
+	return err
 }

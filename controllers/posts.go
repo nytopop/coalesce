@@ -58,23 +58,7 @@ func PostsPage(c *gin.Context) {
 		RenderErr(c, err)
 		return
 	}
-	/*
-		// Attach username and compute 'Nicetime'
-		userCache := map[int]string{}
-		for i, post := range posts {
-			if _, ok := userCache[post.Userid]; !ok {
-				user, err := models.QueryUserID(post.Userid)
-				if err != nil {
-					RenderErr(c, err)
-					return
-				}
-				userCache[user.Userid] = user.Name
-			}
-			posts[i].Username = userCache[post.Userid]
-			posts[i].PostedNice = NiceTime(post.Posted)
-			posts[i].UpdatedNice = NiceTime(post.Updated)
-		}
-	*/
+
 	// render
 	c.HTML(200, "posts/page.html", gin.H{
 		"Posts": posts,

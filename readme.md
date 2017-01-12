@@ -8,7 +8,7 @@ Coalesce runs as a single binary using the native net/http webserver. It is desi
 
 ## TODO
 
-- [ ] Comment delete
+- [x] Comment delete
 - [x] User delete
 - [x] Post delete with comments
 - [ ] Image CRUD
