@@ -17,11 +17,13 @@ Coalesce runs as a single binary using the native net/http webserver. It is desi
 - [x] Cascading delete
 - [ ] /users/me page, # comments, # posts, user information
 - [ ] /users/mycomments
-- [ ] Markdown commenting
-- [ ] Clean up SQL interface
-- [ ] systemd service files
+- [ ] Markdown comments
 - [ ] configuration file or store configuration in DB
+- [ ] create admin user on initial sign in
 - [ ] backup / restore database
+- [ ] log location directives in config
+- [ ] systemd service files
+- [ ] .deb and .rpm packages
 
 ## Technologies
 
