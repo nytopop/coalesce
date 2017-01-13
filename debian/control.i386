@@ -1,0 +1,9 @@
+Package: coalesce
+Version: 0.1-1
+Section: misc
+Priority: optional
+Architecture: i386
+Depends:
+Maintainer: Eric Izoita <ericizoita@gmail.com>
+Description: Coalesce
+ A multi-user blogging cms based on Go and SQLite.

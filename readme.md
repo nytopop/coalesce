@@ -4,7 +4,19 @@ A lightning fast multi-user blogging platform in Go. Currently in pre-alpha phas
 
 ## Installation
 
-Coalesce runs as a single binary using the native net/http webserver. It is designed to run behind a reverse proxy such as haproxy / nginx / apache.
+Coalesce runs as a single binary using the native net/http webserver. It is designed to run behind a reverse proxy such as haproxy / nginx / apache, but can be used standalone.
+
+To build the statically linked .deb package (amd64):
+    git clone https://github.com/nytopop/coalesce
+    cd coalesce
+    make
+
+If make succeeded, the `build/` directory should contain a `dpkg -i` installable .deb package.
+
+To run without installing:
+    git clone https://github.com/nytopop/coalesce
+    cd coalesce
+    make run
 
 ## TODO
 
@@ -18,14 +30,22 @@ Coalesce runs as a single binary using the native net/http webserver. It is desi
 - [ ] /users/me page, # comments, # posts, user information
 - [ ] /users/mycomments
 - [ ] Markdown comments
-- [ ] configuration file or store configuration in DB
-- [ ] create admin user on initial sign in
+- [ ] create admin user on initial load
 - [ ] backup / restore database
 - [ ] log location directives in config
-- [ ] systemd service files
-- [ ] .deb and .rpm packages
 
-## Technologies
+## Packaging
+
+- [x] .deb package build in makefile
+- [x] binary location   (/usr/bin/coalesce)
+- [ ] config location   (/etc/coalesce.conf) -c flag
+- [ ] ligging location  (/var/log/coalesce/dbg.log|err.log|run.log)
+- [ ] database location (/var/lib/coalesce.db)
+- [ ] resource location (/usr/share/coalesce)
+- [ ] systemd / sysv service files
+- [ ] properly set file ownership for all resources
+
+## Deps
 
 Docker
 

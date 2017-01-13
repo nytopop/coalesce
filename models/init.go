@@ -4,8 +4,8 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -14,21 +14,25 @@ import (
 
 var sqdb *sql.DB
 
-func init() {
+func CloseDB() {
+	sqdb.Close()
+}
+
+func InitDB(dbfile string) error {
 	var err error
-	sqdb, err = sql.Open("sqlite3", "coalesce.db")
+	sqdb, err = sql.Open("sqlite3", dbfile)
+	fmt.Println("opening", dbfile)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	//defer sqdb.Close()
 
 	s, err := ioutil.ReadFile("./resources/init.sql")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	if _, err := sqdb.Exec(string(s)); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	pass := os.Getenv("ADMIN_PASS")
@@ -38,12 +42,12 @@ func init() {
 
 	salt, err := util.GenerateSalt()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	token, err := util.ComputeToken(salt, pass)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	adm := SQLUser{
@@ -55,7 +59,7 @@ func init() {
 
 	admInDB, err := QueryUserExists(adm.Name)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	switch admInDB {
@@ -65,7 +69,5 @@ func init() {
 		err = WriteUser(adm)
 	}
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	return err
 }

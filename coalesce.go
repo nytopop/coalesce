@@ -3,26 +3,45 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+	"log"
 	"os"
 	"runtime"
 
+	gcfg "gopkg.in/gcfg.v1"
+
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/nytopop/coalesce/controllers"
+	"github.com/nytopop/coalesce/models"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-//var globalSession, _ = mgo.Dial(os.Getenv("DATABASE_PORT_27017_TCP_ADDR"))
-//var dbname = os.Getenv("DB_NAME")
-
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	// TODO: initial config mode if db empty
+	// process flags
+	var configFile = flag.String("cfg", "/etc/coalesce.cfg", "path to configuration file")
+	flag.Parse()
+
+	err := gcfg.ReadFileInto(&cfg, *configFile)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	err = models.InitDB(cfg.System.Database)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer models.CloseDB()
+
+	fmt.Println(cfg.System.Log)
+	fmt.Println(cfg.System.Resource)
+	fmt.Println(cfg.System.Listen)
 
 	gin.SetMode(gin.ReleaseMode)
-
 	pub := gin.New()
 
 	// middleware
