@@ -32,17 +32,19 @@ To run without installing:
 - [ ] Markdown comments
 - [ ] create admin user on initial load
 - [ ] backup / restore database
-- [ ] log location directives in config
+- [ ] Next / Prev buttons on /posts and others
+- [ ] Configuration of session secret
+- [ ] Mailer
 
 ## Packaging
 
 - [x] .deb package build in makefile
 - [x] binary location   (/usr/bin/coalesce)
-- [ ] config location   (/etc/coalesce.conf) -c flag
-- [ ] ligging location  (/var/log/coalesce/dbg.log|err.log|run.log)
-- [ ] database location (/var/lib/coalesce.db)
-- [ ] resource location (/usr/share/coalesce)
-- [ ] systemd / sysv service files
+- [x] config location   (/etc/coalesce.conf) -cfg flag
+- [x] logging location  (/var/log/coalesce/err.log|access.log)
+- [x] database location (/var/lib/coalesce.db)
+- [x] resource location (/usr/share/coalesce)
+- [x] systemd / sysv service files
 - [ ] properly set file ownership for all resources
 
 ## Deps

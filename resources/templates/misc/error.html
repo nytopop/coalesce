@@ -5,13 +5,14 @@
   <meta charset='utf8'/>
   <meta name='viewport' content='width=device-width, initial-scale=1'/>
   <link rel='stylesheet' href='/static/css/main.css'/>
+  <link rel=icon href=/favicon.png>
   <title>Error</title>
   <style>
   </style>
 </head>
 <body>
 {{ template "misc/menu.html" . }}
-<h1>You've reached an error. We're soooorry.</h1>
+<h1>We're sorry, you seem to have reached an error. Better luck next time!</h1>
 <pre>{{ .Error }}</pre>
 </body>
 </html>

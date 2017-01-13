@@ -5,8 +5,8 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/coalesce -cfg=/etc/coalesce.conf
-StandardOutput=null
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
+Alias=coalesce.service

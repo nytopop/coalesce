@@ -1,8 +1,8 @@
 Package: coalesce
 Version: 0.1-1
-Section: misc
+Section: web
 Priority: optional
-Architecture: i386
+Architecture: amd64
 Depends:
 Maintainer: Eric Izoita <ericizoita@gmail.com>
 Description: Coalesce

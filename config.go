@@ -6,9 +6,11 @@ var cfg Config
 
 type Config struct {
 	System struct {
-		Database string
-		Log      string
-		Resource string
-		Listen   string
+		Database     string
+		DatabaseInit string
+		ErrorLog     string
+		AccessLog    string
+		ResourceDir  string
+		Listen       string
 	}
 }

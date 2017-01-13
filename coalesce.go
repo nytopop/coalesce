@@ -4,7 +4,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"runtime"
@@ -23,32 +22,44 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// process flags
-	var configFile = flag.String("cfg", "/etc/coalesce.cfg", "path to configuration file")
+	var configFile = flag.String("cfg", "/etc/coalesce.conf", "path to configuration file")
 	flag.Parse()
 
+	// Configuration file
 	err := gcfg.ReadFileInto(&cfg, *configFile)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	err = models.InitDB(cfg.System.Database)
+	// Logging
+	errlog, err := os.Create(cfg.System.ErrorLog)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer models.CloseDB()
+	acclog, err := os.Create(cfg.System.AccessLog)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	logs := controllers.Logs{
+		Error:  log.New(errlog, "", log.Ldate|log.Ltime),
+		Access: log.New(acclog, "", log.Ldate|log.Ltime),
+	}
 
-	fmt.Println(cfg.System.Log)
-	fmt.Println(cfg.System.Resource)
-	fmt.Println(cfg.System.Listen)
+	// Database initialization
+	err = models.InitDB(cfg.System.Database, cfg.System.DatabaseInit)
+	if err != nil {
+		logs.Error.Fatalln(err)
+	}
+	defer models.CloseDB()
 
 	gin.SetMode(gin.ReleaseMode)
 	pub := gin.New()
 
 	// middleware
-	pub.Use(gin.Logger())
+	pub.Use(controllers.Logger(logs))
 	pub.Use(gin.Recovery())
 
-	// session management
+	// session management TODO secret
 	secret := []byte(os.Getenv("SESSION_SECRET"))
 	store := sessions.NewCookieStore(secret)
 	pub.Use(sessions.Sessions("coalesce", store))
@@ -60,10 +71,11 @@ func main() {
 	admins := pub.Group("/", controllers.AccessLevelAuth(3))
 
 	// templates
-	pub.LoadHTMLGlob("resources/templates/**/*.html")
+	pub.LoadHTMLGlob(cfg.System.ResourceDir + "/templates/**/*.html")
 
 	// routes
-	pub.Static("/static", "resources/static")
+	pub.Static("/static", cfg.System.ResourceDir+"/static")
+	pub.StaticFile("favicon.png", cfg.System.ResourceDir+"/favicon.png")
 	pub.GET("/", controllers.Home)
 
 	// /img
@@ -109,9 +121,5 @@ func main() {
 	admins.POST("/config/edit", controllers.ConfigTryEdit)
 	admins.POST("/config/reset", controllers.ConfigTryReset)
 
-	// /error
-	pub.GET("/error", controllers.ErrorHome)
-
-	pub.Run()
-	// pub.Run(":3000") for a hard coded port
+	pub.Run(cfg.System.Listen)
 }

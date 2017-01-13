@@ -68,13 +68,5 @@ CREATE TABLE IF NOT EXISTS users (
     privlevel INTEGER NOT NULL
 );
 
--- Table: errors
-CREATE TABLE IF NOT EXISTS errors (
-    errorid   INTEGER PRIMARY KEY ASC AUTOINCREMENT
-                      NOT NULL
-                      UNIQUE,
-    errortext TEXT    NOT NULL
-);
-
 COMMIT TRANSACTION;
 PRAGMA foreign_keys = on;

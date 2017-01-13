@@ -14,6 +14,7 @@ debian.amd64: amd64
 	mkdir -p $(PDIR)/var/log/coalesce
 	# Database
 	mkdir -p $(PDIR)/var/lib/coalesce
+	cp defaults/init.sql $(PDIR)/var/lib/coalesce/init.sql
 	# Resources
 	mkdir -p $(PDIR)/usr/share/coalesce
 	cp -r resources/* $(PDIR)/usr/share/coalesce/
@@ -22,8 +23,7 @@ debian.amd64: amd64
 	cp defaults/coalesce.service $(PDIR)/etc/systemd/system/coalesce.service
 	# Packaging
 	mkdir $(PDIR)/DEBIAN
-	cp debian/control.amd64 $(PDIR)/DEBIAN/control
-	cp debian/copyright $(PDIR)/DEBIAN/copyright
+	cp debian/* $(PDIR)/DEBIAN/
 	dpkg-deb --build $(PDIR)
 
 # We statically link for scratch container support.
@@ -35,10 +35,6 @@ clean:
 	rm -rf build
 
 run: amd64
-	mkdir run
-	build/coalesce-amd64 -cfg defaults/testing.conf
-
-cleanrun: amd64
 	rm -rf run
 	mkdir run
 	build/coalesce-amd64 -cfg defaults/testing.conf

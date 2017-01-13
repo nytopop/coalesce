@@ -4,7 +4,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -18,15 +17,14 @@ func CloseDB() {
 	sqdb.Close()
 }
 
-func InitDB(dbfile string) error {
+func InitDB(dbfile, initfile string) error {
 	var err error
 	sqdb, err = sql.Open("sqlite3", dbfile)
-	fmt.Println("opening", dbfile)
 	if err != nil {
 		return err
 	}
 
-	s, err := ioutil.ReadFile("./resources/init.sql")
+	s, err := ioutil.ReadFile(initfile)
 	if err != nil {
 		return err
 	}
