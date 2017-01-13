@@ -5,7 +5,6 @@ package models
 import (
 	"database/sql"
 	"io/ioutil"
-	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/nytopop/coalesce/util"
@@ -33,39 +32,33 @@ func InitDB(dbfile, initfile string) error {
 		return err
 	}
 
-	pass := os.Getenv("ADMIN_PASS")
-	if pass == "" {
-		pass = "password"
-	}
-
-	salt, err := util.GenerateSalt()
+	// Create admin user with default credentials if it doesn't exist
+	admInDB, err := QueryUserExists("admin")
 	if err != nil {
 		return err
 	}
 
-	token, err := util.ComputeToken(salt, pass)
-	if err != nil {
-		return err
-	}
+	if !admInDB {
+		salt, err := util.GenerateSalt()
+		if err != nil {
+			return err
+		}
 
-	adm := SQLUser{
-		Name:        "admin",
-		Salt:        salt,
-		Token:       token,
-		AccessLevel: 3,
-	}
+		token, err := util.ComputeToken(salt, "coalesce")
+		if err != nil {
+			return err
+		}
 
-	admInDB, err := QueryUserExists(adm.Name)
-	if err != nil {
-		return err
-	}
+		adm := SQLUser{
+			Name:        "admin",
+			Salt:        salt,
+			Token:       token,
+			AccessLevel: 3,
+		}
 
-	switch admInDB {
-	case true:
-		err = UpdateUser(adm)
-	case false:
 		err = WriteUser(adm)
 	}
 
+	// we return err whether or not nil
 	return err
 }

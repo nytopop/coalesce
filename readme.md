@@ -14,6 +14,8 @@ To build the statically linked .deb package (amd64):
 
 If make succeeded, the `build/` directory should contain a `dpkg -i` installable .deb package.
 
+An administrator user with the credentials `admin` : `coalesce` is created by default on first run, *change the password immediately*. Any additional users that are created by registering will be initialized as `commentors`, which can be promoted to `editors` through the administrator account. There can only be one administrator (for now).
+
 To run without installing:
 
     git clone https://github.com/nytopop/coalesce
@@ -37,6 +39,10 @@ To run without installing:
 - [ ] Next / Prev buttons on /posts and others
 - [ ] Configuration of session secret
 - [ ] Mailer
+- [ ] OAuth 2.0 support for sign in
+- [ ] RSS Feeds @ /rss
+- [ ] User password change support @ /users/me
+- [ ] Site statistics @ /stats
 
 ## Packaging
 

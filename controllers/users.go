@@ -98,6 +98,15 @@ func UsersMe(c *gin.Context) {
 	})
 }
 
+// POST /users/passchange
+func UsersTryPassChange(c *gin.Context) {
+	// check if signed in as user
+	// validate form
+	// check if oldpwd is correct
+	// update to newpwd
+	// redirect to /users/me
+}
+
 // GET /users/myposts
 func UsersMyPosts(c *gin.Context) {
 	user := GetUser(c)
