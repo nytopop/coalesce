@@ -7,6 +7,7 @@ A lightning fast multi-user blogging platform in Go. Currently in pre-alpha phas
 Coalesce runs as a single binary using the native net/http webserver. It is designed to run behind a reverse proxy such as haproxy / nginx / apache, but can be used standalone.
 
 To build the statically linked .deb package (amd64):
+
     git clone https://github.com/nytopop/coalesce
     cd coalesce
     make
@@ -14,6 +15,7 @@ To build the statically linked .deb package (amd64):
 If make succeeded, the `build/` directory should contain a `dpkg -i` installable .deb package.
 
 To run without installing:
+
     git clone https://github.com/nytopop/coalesce
     cd coalesce
     make run
