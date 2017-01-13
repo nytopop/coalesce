@@ -3,10 +3,12 @@
 package controllers
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nytopop/coalesce/models"
+	"github.com/nytopop/coalesce/util"
 )
 
 // GET /users/all
@@ -98,13 +100,55 @@ func UsersMe(c *gin.Context) {
 	})
 }
 
+// PassChangeForm
+type PassChangeForm struct {
+	OldPassword  string `form:"oldpassword" binding:"required"`
+	NewPassword1 string `form:"newpassword1" binding:"required"`
+	NewPassword2 string `form:"newpassword2" binding:"required"`
+}
+
 // POST /users/passchange
 func UsersTryPassChange(c *gin.Context) {
-	// check if signed in as user
-	// validate form
-	// check if oldpwd is correct
-	// update to newpwd
-	// redirect to /users/me
+	var pform PassChangeForm
+	err := c.Bind(&pform)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	if pform.NewPassword1 != pform.NewPassword2 {
+		RenderErr(c, errors.New("Passwords do not match!"))
+		return
+	}
+
+	cuser := GetUser(c)
+	user, err := models.QueryUserID(cuser.Userid)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	err = util.CheckToken(user.Salt, pform.OldPassword, user.Token)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	} else {
+		// we update the user with new password
+		newtoken, err := util.ComputeToken(user.Salt, pform.NewPassword1)
+		if err != nil {
+			RenderErr(c, err)
+			return
+		}
+
+		user.Token = newtoken
+		err = models.UpdateUser(user)
+		if err != nil {
+			RenderErr(c, err)
+			return
+		}
+
+		c.Redirect(302, "/users/me")
+	}
 }
 
 // GET /users/myposts

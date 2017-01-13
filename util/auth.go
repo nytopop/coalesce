@@ -5,7 +5,7 @@ package util
 import (
 	"crypto/rand"
 	"crypto/sha512"
-	"encoding/hex"
+	"encoding/base64"
 	"strconv"
 	"time"
 
@@ -20,13 +20,30 @@ func GenerateSalt() (string, error) {
 	}
 
 	hash := sha512.Sum512(r)
-	return hex.EncodeToString(hash[:]), nil
+	return base64.StdEncoding.EncodeToString(hash[:4]), nil
 }
 
 func ComputeToken(salt, pw string) (string, error) {
 	password := []byte(salt + pw)
 	token, err := bcrypt.GenerateFromPassword(password, 14)
-	return string(token), err
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(token), nil
+}
+
+func CheckToken(salt, pw, token string) error {
+	hash, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return err
+	}
+
+	password := []byte(salt + pw)
+	err = bcrypt.CompareHashAndPassword(hash, password)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func NiceTime(oldTime int64) string {
@@ -65,9 +82,4 @@ func NiceTime(oldTime int64) string {
 		elapsed = strconv.Itoa(int(seconds / 60 / 60 / 24 / 30 / 12))
 		return elapsed + " years ago"
 	}
-}
-func CheckToken(salt, pw, token string) error {
-	hash := []byte(token)
-	password := []byte(salt + pw)
-	return bcrypt.CompareHashAndPassword(hash, password)
 }

@@ -34,14 +34,14 @@ To run without installing:
 - [ ] /users/me page, # comments, # posts, user information
 - [ ] /users/mycomments
 - [ ] Markdown comments
-- [ ] create admin user on initial load
+- [x] create admin user on initial load
 - [ ] backup / restore database
 - [ ] Next / Prev buttons on /posts and others
 - [ ] Configuration of session secret
 - [ ] Mailer
 - [ ] OAuth 2.0 support for sign in
 - [ ] RSS Feeds @ /rss
-- [ ] User password change support @ /users/me
+- [x] User password change support @ /users/me
 - [ ] Site statistics @ /stats
 
 ## Packaging

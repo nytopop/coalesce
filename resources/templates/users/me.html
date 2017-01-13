@@ -14,6 +14,17 @@
 {{ template "misc/menu.html" . }}
 {{ template "misc/usermenu.html" . }}
 <h1>{{ .User.Name }}</h1>
+
+<h4>Change password</h4>
+<form method="post" action="/users/passchange">
+  <h3><label for="oldpassword">Old</label>
+  <input type="password" name="oldpassword" id="oldpassword" required></h3>
+  <h3><label for="newpassword1">New</label>
+  <input type="password" name="newpassword1" id="newpassword1" required></h3>
+  <h3><label for="newpassword2">Repeat</label>
+  <input type="password" name="newpassword2" id="newpassword2" required></h3>
+  <h3><button type="submit">Change</button></h3>
+</form>
 <footer>
 </footer>
 </body>
