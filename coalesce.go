@@ -111,7 +111,6 @@ func main() {
 	commentors.GET("/users/me", controllers.UsersMe)
 	commentors.POST("/users/passchange", controllers.UsersTryPassChange)
 	commentors.GET("/users/myposts", controllers.UsersMyPosts)
-	commentors.GET("/users/mycomments", controllers.UsersMyComments)
 	admins.GET("/users/all", controllers.UsersAll)
 	admins.GET("/users/promote/:id", controllers.UsersTryPromote)
 	admins.GET("/users/demote/:id", controllers.UsersTryDemote)

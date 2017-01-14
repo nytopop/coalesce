@@ -22,38 +22,25 @@ To run without installing:
     cd coalesce
     make run
 
-## TODO
+## TODO for alpha release
 
-- [x] Comment delete
-- [x] User delete
-- [x] Post delete with comments
-- [ ] Image CRUD
-- [ ] Search
-- [x] Display author / timestamp of posts in list and view
-- [x] Cascading delete
-- [ ] /users/me page, # comments, # posts, user information
-- [ ] /users/mycomments
-- [ ] Markdown comments
-- [x] create admin user on initial load
-- [ ] backup / restore database
-- [ ] Next / Prev buttons on /posts and others
-- [ ] Configuration of session secret
+### Features
+- [ ] Search   [/search/texttosearch]
+- [ ] RSS Feed [/rss]
+- [ ] Image CRUD [/img/new|del|view|thumb]
+- [ ] Markdown for comments
+- [ ] Backup / Restore / Reset database [/db/backup|restore|reset]
+- [ ] Dedicated change password page, add to usermenu
+- [ ] OAuth 2.0
 - [ ] Mailer
-- [ ] OAuth 2.0 support for sign in
-- [ ] RSS Feeds @ /rss
-- [x] User password change support @ /users/me
-- [ ] Site statistics @ /stats
+- [ ] Site statistics [/stats]
+- [ ] User profiles, name|email|about
+- [ ] Automated spam prevention / detection
 
-## Packaging
-
-- [x] .deb package build in makefile
-- [x] binary location   (/usr/bin/coalesce)
-- [x] config location   (/etc/coalesce.conf) -cfg flag
-- [x] logging location  (/var/log/coalesce/err.log|access.log)
-- [x] database location (/var/lib/coalesce.db)
-- [x] resource location (/usr/share/coalesce)
-- [x] systemd / sysv service files
-- [ ] properly set file ownership for all resources
+### Fixes
+- [ ] Next / Prev buttons on /posts|/users/myposts|/users/mycomments
+- [ ] Stable configuration of dynamic session secret
+- [ ] Session expiry timeout
 
 ## Deps
 

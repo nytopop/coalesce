@@ -171,10 +171,3 @@ func UsersMyPosts(c *gin.Context) {
 		"User":  user,
 	})
 }
-
-// GET /users/mycomments
-func UsersMyComments(c *gin.Context) {
-	c.HTML(200, "users/mycomments.html", gin.H{
-		"User": GetUser(c),
-	})
-}

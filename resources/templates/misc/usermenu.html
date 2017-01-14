@@ -3,7 +3,6 @@
   <li><a href="/users/me">Me</a></li>
   {{ if ne .User.AccessLevel 3 }}
   <li><a href="/users/myposts">My Posts</a></li>
-  <li><a href="/users/mycomments">My Comments</a></li>
   {{ end }}
   {{ if eq .User.AccessLevel 3 }}
   <li><a href="/users/all">Users</a></li>
