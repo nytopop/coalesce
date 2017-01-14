@@ -41,6 +41,7 @@ To run without installing:
 - [ ] Next / Prev buttons on /posts|/users/myposts|/users/mycomments
 - [ ] Stable configuration of dynamic session secret
 - [ ] Session expiry timeout
+- [ ] Write tests!
 
 ## Deps
 
