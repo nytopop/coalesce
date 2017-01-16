@@ -24,6 +24,7 @@ type SQLPost struct {
 	UpdatedNice string
 }
 
+// ProcessPosts adds the following dynamic information to a slice of SQLPost objects: the username that posted them and the 'nice time' of their post and last updated date.
 func ProcessPosts(posts []SQLPost) ([]SQLPost, error) {
 	userCache := map[int]string{}
 	for i, post := range posts {
@@ -41,10 +42,15 @@ func ProcessPosts(posts []SQLPost) ([]SQLPost, error) {
 	return posts, nil
 }
 
-func QueryPostsPage(page int) ([]SQLPost, error) {
-	s := `SELECT * FROM posts WHERE postid > ? ORDER BY postid DESC LIMIT 5`
+// QueryPostsPage returns posts in page# page, of size size.
+func QueryPostsPage(page, size int) ([]SQLPost, error) {
+	s := `SELECT *
+	FROM posts
+	ORDER BY postid DESC
+	LIMIT ?
+	OFFSET ?`
 
-	rows, err := sqdb.Query(s, page*5)
+	rows, err := sqdb.Query(s, size, page*size)
 	if err != nil {
 		return []SQLPost{}, err
 	}

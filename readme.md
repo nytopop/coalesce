@@ -38,6 +38,7 @@ To run without installing:
 - [ ] Automated spam prevention / detection
 - [x] Pass a Page object to each pageload, containing site information. site title, page title, next/prev items, etc
 - [ ] Social media integration
+- [ ] Configurable templates
 
 ### Fixes
 - [ ] Next / Prev buttons on /posts|/users/myposts|/users/mycomments

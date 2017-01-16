@@ -11,8 +11,12 @@
   <br>
   {{ end }}
 <footer>
-  <a href="" style="float: left;">Prev</a>
-  <a href="" style="float: right;">Next</a>
+  {{ if gt .Site.Prev -1 }}
+  <a href="/posts?p={{ .Site.Prev }}" style="float: left;">Prev</a>
+  {{ end }}
+  {{ if gt .Site.Next -1 }}
+  <a href="/posts?p={{ .Site.Next }}" style="float: right;">Next</a>
+  {{ end }}
 </footer>
 </body>
 </html>

@@ -42,3 +42,6 @@ run: amd64
 	rm -rf run
 	mkdir run
 	build/coalesce-amd64 -cfg defaults/testing.conf
+
+prun: amd64
+	build/coalesce-amd64 -cfg defaults/testing.conf

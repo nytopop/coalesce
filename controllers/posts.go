@@ -47,7 +47,7 @@ func PostsPage(c *gin.Context) {
 	}
 
 	// get posts
-	posts, err := models.QueryPostsPage(pNum)
+	posts, err := models.QueryPostsPage(pNum, 15)
 	if err != nil {
 		RenderErr(c, err)
 		return
@@ -60,7 +60,27 @@ func PostsPage(c *gin.Context) {
 	}
 
 	site := models.Site
-	site.Title = "Posts"
+	site.Title = "posts"
+
+	// if this is not page 0, prev should work
+	if pNum > 0 {
+		site.Prev = pNum - 1
+	} else {
+		site.Prev = -1
+	}
+
+	np, err := models.QueryPostsPage(pNum+1, 15)
+	if err != nil {
+		RenderErr(c, err)
+		return
+	}
+
+	// if there is a next page, use it
+	if len(np) > 0 {
+		site.Next = pNum + 1
+	} else {
+		site.Next = -1
+	}
 
 	// render
 	c.HTML(200, "posts/page.html", gin.H{
@@ -122,7 +142,7 @@ func PostsView(c *gin.Context) {
 // GET /posts/new
 func PostsNew(c *gin.Context) {
 	site := models.Site
-	site.Title = "Write"
+	site.Title = "write"
 	c.HTML(200, "posts/new.html", gin.H{
 		"Site": site,
 		"User": GetUser(c),
@@ -179,7 +199,7 @@ func PostsEdit(c *gin.Context) {
 
 	if user.Userid == post.Userid {
 		site := models.Site
-		site.Title = "Edit"
+		site.Title = "edit"
 		c.HTML(200, "posts/edit.html", gin.H{
 			"Site": site,
 			"User": user,

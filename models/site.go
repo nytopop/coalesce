@@ -9,4 +9,6 @@ type Siteconf struct {
 	Title     string
 	Copyright string
 	Email     string
+	Prev      int
+	Next      int
 }
