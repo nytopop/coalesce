@@ -76,8 +76,10 @@ func AccessLevelAuth(level int) gin.HandlerFunc {
 
 // GET /auth/sign-in
 func AuthSignIn(c *gin.Context) {
+	site := models.Site
+	site.Title = "Sign in"
 	c.HTML(http.StatusOK, "auth/sign-in.html", gin.H{
-		//"Site": GetConf(),
+		"Site": site,
 		"User": GetUser(c),
 	})
 }
@@ -127,8 +129,10 @@ func AuthTrySignIn(c *gin.Context) {
 
 // GET /auth/register
 func AuthRegister(c *gin.Context) {
+	site := models.Site
+	site.Title = "Register"
 	c.HTML(http.StatusOK, "auth/register.html", gin.H{
-		//"Site": GetConf(),
+		"Site": site,
 		"User": GetUser(c),
 	})
 }

@@ -36,12 +36,15 @@ To run without installing:
 - [ ] Site statistics [/stats]
 - [ ] User profiles, name|email|about
 - [ ] Automated spam prevention / detection
+- [x] Pass a Page object to each pageload, containing site information. site title, page title, next/prev items, etc
+- [ ] Social media integration
 
 ### Fixes
 - [ ] Next / Prev buttons on /posts|/users/myposts|/users/mycomments
 - [ ] Stable configuration of dynamic session secret
 - [ ] Session expiry timeout
 - [ ] Write tests!
+- [ ] Remove unneccessary controllers/config and controllers/img code
 
 ## Deps
 

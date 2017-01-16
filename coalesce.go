@@ -52,6 +52,10 @@ func main() {
 	}
 	defer models.CloseDB()
 
+	models.Site.SiteTitle = cfg.Site.Title
+	models.Site.Copyright = cfg.Site.Copyright
+	models.Site.Email = cfg.Site.Email
+
 	gin.SetMode(gin.ReleaseMode)
 	pub := gin.New()
 

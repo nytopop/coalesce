@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/nytopop/coalesce/models"
 )
 
 type Logs struct {
@@ -48,8 +49,12 @@ func Logger(logs Logs) gin.HandlerFunc {
 // Render Error
 func RenderErr(c *gin.Context, err error) {
 	c.Error(err)
+
+	site := models.Site
+	site.Title = "Error"
 	c.HTML(500, "misc/error.html", gin.H{
-		"Error": err,
+		"Site":  site,
 		"User":  GetUser(c),
+		"Error": err,
 	})
 }

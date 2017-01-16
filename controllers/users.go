@@ -19,9 +19,12 @@ func UsersAll(c *gin.Context) {
 		return
 	}
 
+	site := models.Site
+	site.Title = "Users"
 	c.HTML(200, "users/all.html", gin.H{
-		"Users": users,
+		"Site":  site,
 		"User":  GetUser(c),
+		"Users": users,
 	})
 }
 
@@ -95,8 +98,13 @@ func UsersTryDelete(c *gin.Context) {
 
 // GET /users/me
 func UsersMe(c *gin.Context) {
+	user := GetUser(c)
+
+	site := models.Site
+	site.Title = user.Name
 	c.HTML(200, "users/me.html", gin.H{
-		"User": GetUser(c),
+		"Site": site,
+		"User": user,
 	})
 }
 
@@ -166,8 +174,11 @@ func UsersMyPosts(c *gin.Context) {
 		return
 	}
 
+	site := models.Site
+	site.Title = "My Posts"
 	c.HTML(200, "users/myposts.html", gin.H{
-		"Posts": posts,
+		"Site":  site,
 		"User":  user,
+		"Posts": posts,
 	})
 }

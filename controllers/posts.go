@@ -59,10 +59,14 @@ func PostsPage(c *gin.Context) {
 		return
 	}
 
+	site := models.Site
+	site.Title = "Posts"
+
 	// render
 	c.HTML(200, "posts/page.html", gin.H{
-		"Posts": posts,
+		"Site":  site,
 		"User":  GetUser(c),
+		"Posts": posts,
 	})
 }
 
@@ -95,6 +99,7 @@ func PostsView(c *gin.Context) {
 	post.Username = user.Name
 	post.PostedNice = util.NiceTime(post.Posted)
 	post.UpdatedNice = util.NiceTime(post.Updated)
+	post.RenderHTML = template.HTML(post.BodyHTML)
 
 	// comments!
 	comments, err := CommentsForPost(pNum)
@@ -103,18 +108,23 @@ func PostsView(c *gin.Context) {
 		return
 	}
 
-	post.RenderHTML = template.HTML(post.BodyHTML)
+	site := models.Site
+	site.Title = post.Title
+
 	c.HTML(200, "posts/view.html", gin.H{
+		"Site":     site,
+		"User":     GetUser(c),
 		"Post":     post,
 		"Comments": comments,
-		"User":     GetUser(c),
 	})
 }
 
 // GET /posts/new
 func PostsNew(c *gin.Context) {
+	site := models.Site
+	site.Title = "Write"
 	c.HTML(200, "posts/new.html", gin.H{
-		//			"Site": GetConf(),
+		"Site": site,
 		"User": GetUser(c),
 	})
 }
@@ -168,9 +178,12 @@ func PostsEdit(c *gin.Context) {
 	user := GetUser(c)
 
 	if user.Userid == post.Userid {
+		site := models.Site
+		site.Title = "Edit"
 		c.HTML(200, "posts/edit.html", gin.H{
-			"Post": post,
+			"Site": site,
 			"User": user,
+			"Post": post,
 		})
 	} else {
 		c.Redirect(302, "/auth/sign-in")

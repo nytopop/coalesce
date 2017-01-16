@@ -3,7 +3,7 @@ BDIR = build
 PDIR = $(BDIR)/$(PNAME)
 
 # Build .deb packages.
-debian.amd64: amd64
+debian.amd64: test amd64
 	# Binary
 	mkdir -p $(PDIR)/usr/bin
 	cp $(BDIR)/coalesce-amd64 $(PDIR)/usr/bin/coalesce
@@ -25,6 +25,10 @@ debian.amd64: amd64
 	mkdir $(PDIR)/DEBIAN
 	cp debian/* $(PDIR)/DEBIAN/
 	dpkg-deb --build $(PDIR)
+
+# Run tests
+test:
+	go test ./...
 
 # We statically link for scratch container support.
 amd64: clean

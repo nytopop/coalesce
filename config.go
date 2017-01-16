@@ -13,4 +13,9 @@ type Config struct {
 		ResourceDir  string
 		Listen       string
 	}
+	Site struct {
+		Title     string
+		Copyright string
+		Email     string
+	}
 }
