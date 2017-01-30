@@ -7,7 +7,7 @@
 {{ template "misc/usermenu.html" . }}
 <h1>All Users</h1>
 {{ range $k, $v := .Users }}
-<a href="/user/del/{{ $v.Userid }}" onclick="return confirm('Are you sure?')">Delete</a>
+<a href="/users/del/{{ $v.Userid }}" onclick="return confirm('Are you sure?')">Delete</a>
 {{ if eq $v.AccessLevel 1 }}
 <a href="/users/promote/{{ $v.Userid }}" onclick="return confirm('Are you sure?')">Promote</a>
 (commentor)

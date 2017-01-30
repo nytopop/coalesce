@@ -42,7 +42,7 @@ func ProcessPosts(posts []SQLPost) ([]SQLPost, error) {
 	return posts, nil
 }
 
-// QueryPostsPage returns posts in page# page, of size size.
+// QueryPostsPage returns posts in page page, of size size.
 func QueryPostsPage(page, size int) ([]SQLPost, error) {
 	s := `SELECT *
 	FROM posts
@@ -80,7 +80,10 @@ func QueryPostsPage(page, size int) ([]SQLPost, error) {
 }
 
 func QueryPostsUserID(user int) ([]SQLPost, error) {
-	s := `SELECT * FROM posts WHERE userid=? ORDER BY postid DESC`
+	s := `SELECT * 
+	FROM posts 
+	WHERE userid=? 
+	ORDER BY postid DESC`
 
 	rows, err := sqdb.Query(s, user)
 	if err != nil {
@@ -108,7 +111,9 @@ func QueryPostsUserID(user int) ([]SQLPost, error) {
 }
 
 func QueryPost(post int) (SQLPost, error) {
-	s := `SELECT * FROM posts WHERE postid = ?`
+	s := `SELECT * 
+	FROM posts 
+	WHERE postid = ?`
 
 	row, err := sqdb.Query(s, post)
 	if err != nil {
@@ -134,9 +139,18 @@ func QueryPost(post int) (SQLPost, error) {
 	return p, nil
 }
 
+func QueryPrevPost(post int) (int, error) {
+	return 0, nil
+}
+
+func QueryNextPost(post int) (int, error) {
+	return 0, nil
+}
+
 func WritePost(p SQLPost) error {
 	//	s := `INSERT INTO posts VALUES (?, ?, ?, ?, ?, ?, ?, ?)` // category
-	s := `INSERT INTO posts VALUES (?, ?, ?, ?, ?, ?, ?)`
+	s := `INSERT INTO posts 
+	VALUES (?, ?, ?, ?, ?, ?, ?)`
 
 	_, err := sqdb.Exec(s, nil,
 		p.Userid,
@@ -151,13 +165,16 @@ func WritePost(p SQLPost) error {
 }
 
 func UpdatePost(p SQLPost) error {
-	s := `UPDATE posts SET title=?,body=?,bodyHTML=?,updated=? WHERE postid=?`
+	s := `UPDATE posts 
+	SET title=?,body=?,bodyHTML=?,updated=? 
+	WHERE postid=?`
 	_, err := sqdb.Exec(s, p.Title, p.Body, p.BodyHTML, p.Updated, p.Postid)
 	return err
 }
 
 func DeletePost(post int) error {
-	s := `DELETE FROM posts WHERE postid=?`
+	s := `DELETE FROM posts 
+	WHERE postid=?`
 	_, err := sqdb.Exec(s, post)
 	return err
 }

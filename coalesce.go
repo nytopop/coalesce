@@ -82,14 +82,6 @@ func main() {
 	pub.StaticFile("favicon.png", cfg.System.ResourceDir+"/favicon.png")
 	pub.GET("/", controllers.Home)
 
-	// /img
-	editors.GET("/img", controllers.ImgAll)
-	pub.GET("/img/thumb/:id", controllers.ImgThumb)
-	pub.GET("/img/view/:id", controllers.ImgView)
-	editors.GET("/img/new", controllers.ImgNew)
-	editors.POST("/img/new", controllers.ImgTryNew)
-	editors.GET("/img/del/:id", controllers.ImgTryDelete)
-
 	// /posts
 	pub.GET("/posts", controllers.PostsPage)
 	pub.GET("/posts/view/:id", controllers.PostsView)
@@ -119,11 +111,6 @@ func main() {
 	admins.GET("/users/promote/:id", controllers.UsersTryPromote)
 	admins.GET("/users/demote/:id", controllers.UsersTryDemote)
 	admins.GET("/users/del/:id", controllers.UsersTryDelete)
-
-	// /config
-	admins.GET("/config", controllers.ConfigEdit)
-	admins.POST("/config/edit", controllers.ConfigTryEdit)
-	admins.POST("/config/reset", controllers.ConfigTryReset)
 
 	pub.Run(cfg.System.Listen)
 }

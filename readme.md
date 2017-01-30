@@ -27,7 +27,6 @@ To run without installing:
 ### Features
 - [ ] Search   [/search/texttosearch]
 - [ ] RSS Feed [/rss]
-- [ ] Image CRUD [/img/new|del|view|thumb]
 - [ ] Markdown for comments
 - [ ] Backup / Restore / Reset database [/db/backup|restore|reset]
 - [ ] Dedicated change password page, add to usermenu
@@ -45,7 +44,7 @@ To run without installing:
 - [ ] Stable configuration of dynamic session secret
 - [ ] Session expiry timeout
 - [ ] Write tests!
-- [ ] Remove unneccessary controllers/config and controllers/img code
+- [x] Remove unneccessary controllers/config and controllers/img code
 
 ## Deps
 
