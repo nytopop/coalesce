@@ -1,4 +1,4 @@
-PNAME = coalesce_0.1-1
+PNAME = coalesce_0.1.1-1
 BDIR = build
 PDIR = $(BDIR)/$(PNAME)
 

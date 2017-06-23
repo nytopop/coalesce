@@ -45,11 +45,11 @@ hr {
 }
 
 pre {
-	padding: 0.3em 0;
+	padding: 1em 0 1em 0;
 	border: 1px #777;
 	border-style: solid none;
 	margin: 0;
-	overflow-x: scroll;
+	overflow-x: auto;
 }
 
 .col-1-2 { 
