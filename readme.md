@@ -12,7 +12,6 @@ An administrator user with the credentials `admin` : `coalesce` is created by de
 ### Features
 - [ ] Search   [/search/texttosearch]
 - [ ] RSS Feed [/rss]
-- [ ] Markdown for comments
 - [ ] Backup / Restore / Reset database [/db/backup|restore|reset]
 - [ ] Mailer
 - [ ] Site statistics [/stats]

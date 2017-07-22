@@ -4,7 +4,7 @@ body {
 	font-size: 16px;
 	font-family: 'Lora', Palatino, serif;
 	margin: 2em auto 8em auto;
-	width: 32em;
+	width: 48em;
 	letter-spacing: .1px; 
 }
 
@@ -191,16 +191,10 @@ dd {
 
 .katex { font-size: 1.15em !important; }
 
-/* Mobile devices */
-@media only screen and (max-width: 500px) {
-	body { width: calc(100% - 1em);
+/* Responsive sizing for smaller screens */
+@media only screen and (max-width: 48em) {
+	body { width: calc(100% - 2em);
          margin: 1em auto 4em auto; }
-	.m-1 { width: calc(100% - 1em); }
-}
-
-/* Tablets */
-@media only screen and (min-width: 500px) and (max-width: 980px) {
-	body { width: 31em; }
 }
 
 /* Printing */

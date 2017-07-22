@@ -9,7 +9,7 @@ test:
 
 amd64: clean
 	go fmt *.go
-	env GOOS=linux GOARCH=amd64 go build -o $(BDIR)/coalesce-amd64
+	env GOOS=linux GOARCH=amd64 go build -v -o $(BDIR)/coalesce-amd64
 
 clean:
 	rm -rf build
